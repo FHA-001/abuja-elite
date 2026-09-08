@@ -1,0 +1,28 @@
+{
+  "name": "workspace",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "preinstall": "node scripts/check-package-manager.cjs",
+    "build": "pnpm --filter @workspace/abuja-elite typecheck && pnpm --filter @workspace/abuja-elite build && node scripts/seo.mjs",
+    "typecheck:libs": "tsc --build",
+    "typecheck": "pnpm --filter @workspace/abuja-elite typecheck && tsc -p supabase/functions/tsconfig.json",
+    "dev": "pnpm --filter @workspace/abuja-elite dev",
+    "test": "node --test tests/*.test.mjs",
+    "verify": "pnpm test && pnpm typecheck && pnpm build"
+  },
+  "private": true,
+  "dependencies": {
+    "@replit/connectors-sdk": "^0.4.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.3.14",
+    "prettier": "^3.9.6",
+    "typescript": "~5.9.3"
+  },
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "type": "module"
+}

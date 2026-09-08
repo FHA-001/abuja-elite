@@ -1,0 +1,29 @@
+import {useEffect,useId,useRef,useState} from 'react';
+import {Link} from 'wouter';
+import {publicClient} from './data';
+type Kind='contact'|'application'|'newsletter'|'event';
+type Turnstile={render:(el:HTMLElement,options:Record<string,unknown>)=>string;remove:(id:string)=>void;reset:(id:string)=>void};
+declare global{interface Window{turnstile?:Turnstile}}
+let loader:Promise<Turnstile>|undefined;
+function loadChallenge(){return loader??=new Promise<Turnstile>((resolve,reject)=>{if(window.turnstile){resolve(window.turnstile);return;}const s=document.createElement('script');s.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';s.async=true;s.onload=()=>window.turnstile?resolve(window.turnstile):reject(new Error('Security check unavailable'));s.onerror=()=>{loader=undefined;s.remove();reject(new Error('Security check unavailable'));};document.head.append(s);});}
+export function ConnectForm({initialKind='contact',eventId}:{initialKind?:Kind;eventId?:string}){
+ const id=useId(),[kind,setKind]=useState<Kind>(initialKind),[busy,setBusy]=useState(false),[result,setResult]=useState(''),[success,setSuccess]=useState(false),[token,setToken]=useState(''),[challengeError,setChallengeError]=useState(false),[attempt,setAttempt]=useState(0);
+ const container=useRef<HTMLDivElement>(null),widget=useRef<string|undefined>(undefined);
+ const siteKey=import.meta.env.VITE_TURNSTILE_SITE_KEY;const enabled=Boolean(siteKey&&import.meta.env.VITE_SUPABASE_URL&&import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
+ useEffect(()=>{if(!enabled||success)return;let disposed=false;setChallengeError(false);loadChallenge().then(api=>{if(disposed||!container.current)return;widget.current=api.render(container.current,{sitekey:siteKey,action:'abuja_enquiry',theme:'dark',callback:(v:string)=>setToken(v),'expired-callback':()=>setToken(''),'error-callback':()=>{setToken('');setChallengeError(true);}});}).catch(()=>setChallengeError(true));return()=>{disposed=true;if(widget.current)window.turnstile?.remove(widget.current);widget.current=undefined;setToken('');};},[enabled,siteKey,success,attempt]);
+ if(!enabled)return <div className="public-empty"><h3>Let’s start a conversation.</h3><p>Online enquiries will open soon. For now, connect with us on Instagram.</p><a className="gold-button mt-5" href="https://www.instagram.com/the.elite_ng" target="_blank" rel="noopener noreferrer">Message @the.elite_ng ↗</a></div>;
+ if(success)return <div className="public-empty" role="status"><h3>Thank you for reaching out.</h3><p>Your request has been received for review. This does not confirm membership, a subscription or an event place.</p><button className="outline-button mt-5" onClick={()=>{setSuccess(false);setResult('');}}>Send another enquiry</button></div>;
+ return <form className="public-form" aria-label="Contact Abuja Elite" onSubmit={async e=>{e.preventDefault();if(busy||!token)return;const form=e.currentTarget,fields=new FormData(form);setBusy(true);setResult('');try{const payload={name:fields.get('name'),email:fields.get('email'),message:fields.get('message'),phone:fields.get('phone'),interest:fields.get('interest'),subject:fields.get('subject'),consent:fields.get('consent')==='on',event_id:eventId};const{data,error}=await publicClient().functions.invoke('submit-interest',{body:{kind,payload,token,website:fields.get('website')}});if(error||data?.received!==true)throw new Error('We could not receive your request. Please retry shortly or contact us on Instagram.');form.reset();setSuccess(true);}catch(err){setResult(err instanceof Error?err.message:'Unable to send. Please retry.');}finally{setBusy(false);setToken('');if(widget.current)window.turnstile?.reset(widget.current);}}}>
+ <h2>{kind==='event'?'Register your interest':'Start a conversation'}</h2>
+ {initialKind!=='event'&&<label htmlFor={id+'kind'}>I’d like to<select id={id+'kind'} value={kind} disabled={busy} onChange={e=>{setKind(e.target.value as Kind);setResult('');}}><option value="contact">Send a message / propose a collaboration</option><option value="application">Enquire about membership</option><option value="newsletter">Receive updates</option></select></label>}
+ {kind!=='newsletter'&&<label htmlFor={id+'name'}>Your name<input id={id+'name'} name="name" autoComplete="name" required maxLength={160}/></label>}
+ <label htmlFor={id+'email'}>Email address<input id={id+'email'} name="email" type="email" autoComplete="email" required maxLength={320}/></label>
+ {kind==='application'&&<><label>Phone (optional)<input name="phone" type="tel" autoComplete="tel" maxLength={40}/></label><label>What interests you?<input name="interest" required maxLength={160} placeholder="Community, experiences, collaboration…"/></label></>}
+ {kind==='contact'&&<label>Subject (optional)<input name="subject" maxLength={200}/></label>}
+ {kind!=='newsletter'&&<label>{kind==='event'?'A note (optional)':'Your message'}<textarea name="message" rows={5} required={kind!=='event'} minLength={kind==='event'?undefined:10} maxLength={5000}/></label>}
+ <div className="form-honeypot" aria-hidden="true"><label>Leave this blank<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
+ <label className="consent"><input name="consent" type="checkbox" required/><span>{kind==='newsletter'?'I agree to receive Abuja Elite updates by email. I can withdraw my consent by contacting the team.':'I agree that Abuja Elite may use these details to review and respond to my enquiry.'} <Link href="/privacy">Privacy information</Link></span></label>
+ <div ref={container}/>{challengeError&&<p role="alert">The security check could not load. <button type="button" className="public-more" onClick={()=>setAttempt(v=>v+1)}>Retry security check</button></p>}
+ <button className="gold-button" disabled={busy||!token}>{busy?'Sending…':'Send enquiry ↗'}</button>{result&&<p role="alert">{result}</p>}
+ </form>;
+}

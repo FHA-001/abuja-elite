@@ -1,0 +1,309 @@
+Implement Phase 2 — Supabase Foundation for the existing Abuja Elite project.
+
+Work directly in the existing project. Complete the authorized implementation and available verification, then stop before Phase 3.
+
+**1. Project context and boundaries**
+
+Abuja Elite is an Abuja lifestyle and community platform celebrating people, entrepreneurs, excellence, networking, and success stories.
+
+The existing premium dark/gold/warm-ivory visual direction is approved. Preserve the homepage, branding, navigation, responsive behavior, and animations.
+
+The current frontend is reported to use React, Vite, TypeScript, Tailwind CSS, and Wouter, with its main application under:
+
+artifacts/abuja-elite/
+
+Inspect the actual repository to confirm its structure and dependencies.
+
+Use Supabase for PostgreSQL, Auth, Storage, and Row Level Security. Replit is the development environment; eventual production hosting will be Vercel, with source ownership on the user’s laptop and GitHub.
+
+Do not introduce a framework migration, redesign, competing database, custom authentication system, or Replit-specific backend dependency.
+
+This phase establishes the backend and application integration foundation. The full admin dashboard belongs to Phase 3; connecting public sections and submission forms belongs to Phase 4.
+
+**2. Inspect before changing**
+
+Inspect:
+
+* Repository instructions and current working-tree changes.
+* Workspace configuration, package manager, lockfile, and scripts.
+* Frontend entry point, routing, styles, and environment configuration.
+* Existing Express API, database packages, Drizzle scaffold, and their actual consumers.
+* Existing Supabase code or migrations, if any.
+
+Run the existing build and available type checks to establish a baseline. Distinguish pre-existing failures from regressions.
+
+Preserve unrelated work. Remove or retire unused database infrastructure only after checking its dependencies. Keep anything required by the current Replit preview/build workflow and explain why it remains.
+
+Do not upgrade unrelated packages.
+
+**3. Supabase connection**
+
+The user has created the Supabase project and saved these Replit environment variables:
+
+VITE_SUPABASE_URL
+VITE_SUPABASE_PUBLISHABLE_KEY
+
+Use those exact names.
+
+* Install @supabase/supabase-js using the existing package manager if needed.
+* Create a reusable, typed browser client in an appropriate frontend module.
+* Use import.meta.env for the Vite variables.
+* Validate that configuration exists without printing its values.
+* Add environment typings and a placeholder-only .env.example.
+* Ensure real environment files remain ignored by Git while .env.example can be tracked.
+* Never expose database passwords, secret keys, or service_role credentials through frontend code or Vite configuration.
+* Do not serialize all server environment variables into the client bundle.
+
+Keep the existing homepage usable while the new foundation is introduced. Missing configuration must produce a clear, controlled failure when Supabase functionality is used.
+
+Restart the development process if needed for environment changes.
+
+**4. Database migrations**
+
+Create versioned SQL migrations in a clearly documented supabase/migrations directory.
+
+Use UUID primary keys, appropriate foreign keys, timestamptz audit fields, updated_at triggers, sensible indexes, validation constraints, and least-privilege grants.
+
+All publishable content must default to unpublished; featured must default to false.
+
+Implement these tables:
+
+members:
+
+* name, unique slug, profile image reference, bio
+* role, category, location
+* Instagram URL, website URL
+* featured, published, sort_order
+* created_at, updated_at
+
+collaborations:
+
+* name, unique slug
+* logo and cover image references
+* description, website URL, Instagram URL, category
+* featured, published, sort_order
+* created_at, updated_at
+
+events:
+
+* title, unique slug, description
+* starts_at and optional ends_at as timestamptz
+* location, cover image reference, registration URL
+* lifecycle status: scheduled or cancelled
+* featured, published
+* created_at, updated_at
+
+Use publication state for drafts. Derive upcoming/past from event timing instead of maintaining a manually stale “past” status. Document Africa/Lagos as the intended display timezone and handle timezone conversion explicitly.
+
+stories:
+
+* title, unique slug, excerpt, content
+* cover image reference, category, author_name
+* published_at, featured, published
+* created_at, updated_at
+
+Choose and document a simple content format compatible with a later editor. Avoid introducing unsafe HTML rendering.
+
+gallery_items:
+
+* image reference, optional thumbnail reference
+* caption, alt_text, category
+* optional event_id, story_id, collaboration_id
+* featured, published, sort_order
+* created_at, updated_at
+
+applications:
+
+* name, email, optional phone
+* message, interest
+* status: new, reviewed, contacted, accepted, declined, archived
+* created_at, updated_at
+
+contact_messages:
+
+* name, email, optional subject, message
+* status: new, reviewed, replied, archived
+* created_at, updated_at
+
+event_interests:
+
+* event_id, name, email
+* optional message
+* created_at, updated_at
+* duplicate protection for the same normalized email and event
+
+newsletter_subscribers:
+
+* normalized unique email
+* status: pending, subscribed, unsubscribed
+* consent, consent_at
+* subscribed_at, unsubscribed_at
+* created_at, updated_at
+
+Default newsletter records to pending. Do not implement automatic resubscription or invent a completed email confirmation workflow.
+
+site_settings:
+
+* unique key, JSONB value
+* explicit public/private visibility, defaulting to private
+* updated_at
+
+Only deliberately public settings may be exposed. Never store credentials in site_settings.
+
+For media owned by Supabase Storage, store stable bucket/object paths rather than expiring signed URLs. Document any deliberate changes from these suggested fields.
+
+Do not seed invented members, events, collaborations, biographies, testimonials, or subscriber data. Manga Automobiles and Abana Cars must not receive fabricated partnership descriptions.
+
+**5. Administrator authorization and RLS**
+
+Implement a small administrator allowlist tied to auth.users, preferably in a private schema outside the exposed Data API schemas.
+
+Required behavior:
+
+* Authentication alone does not grant administrator privileges.
+* Public signup cannot create an administrator.
+* User-editable metadata must not control administrator authorization.
+* Anonymous and ordinary authenticated users cannot modify the allowlist.
+* Initial administrator provisioning must happen through a trusted dashboard/SQL workflow.
+* Do not create a public “make me admin” endpoint.
+
+Provide a reusable authorization helper that checks the current authenticated user. Avoid recursive RLS policies. Any SECURITY DEFINER function must use a safe search_path, fully qualified references, and explicitly restricted execution privileges.
+
+If the frontend needs an authorization RPC, expose only the current caller’s administrator status, with no arbitrary user-ID lookup.
+
+Enable RLS on every application table and define explicit grants and policies:
+
+* Anonymous and ordinary authenticated users can read published public content only.
+* They cannot create, edit, delete, feature, or publish content.
+* Stories must also satisfy the chosen publication-time rule.
+* Public settings access must enforce the visibility field.
+* Applications, contact messages, event interests, and newsletter records must not be publicly readable.
+* Authorized administrators can manage content and review submissions.
+* Allowlist administration remains outside the browser CMS for this phase.
+
+Public submission endpoints are deferred to Phase 4. Leave anonymous submission-table writes denied now.
+
+Document the planned Phase 4 submission boundary: server-side validation, spam protection, persistent rate limiting, duplicate handling, controlled fields, and non-revealing responses. Do not add unrestricted INSERT policies as a shortcut.
+
+**6. Storage foundation**
+
+Create these buckets:
+
+member-images
+event-images
+collaboration-images
+story-images
+gallery-images
+site-assets
+
+For this phase:
+
+* Make buckets private.
+* Permit upload, read, replacement, and deletion only for authorized administrators through Storage policies.
+* Limit uploads to JPEG, PNG, and WebP, with a 5 MiB per-file limit.
+* Use unique object paths and avoid accidental overwrites.
+* Provide reusable upload/delete/admin-preview helpers.
+* Persist object paths, not signed URLs.
+* Do not change system-owned Storage table definitions.
+
+Keep existing bundled site assets working.
+
+Public media delivery will be connected in Phase 4 using publication-aware access rules. Explicitly document this unfinished step. Do not solve it by making every bucket public or issuing permanent public access to draft assets.
+
+Document that deleting a content row does not automatically delete its Storage object, and account for shared references before deleting media.
+
+**7. Auth and data-access foundation**
+
+Implement reusable foundations for:
+
+* Email/password sign-in.
+* Sign-out.
+* Session initialization and auth-state changes.
+* Current-user administrator authorization.
+* Cleanup of auth subscriptions.
+* Loading, unauthorized, and failure states.
+
+Do not build the full admin dashboard or public registration interface in this phase. Database and Storage policies must enforce authorization independently of future route guards.
+
+Provide a setup checklist for:
+
+* Creating the initial Auth user.
+* Adding that exact user UUID to the administrator allowlist.
+* Disabling public signup for the current admin-only authentication scope.
+* Configuring exact development and deployed redirect URLs when needed.
+* Configuring password recovery and production email delivery before launch.
+
+Do not request passwords in chat or invent an administrator account.
+
+Create typed data-access modules for the agreed content tables, with reusable published-content queries, bounded list results, deterministic ordering, and explicit error handling.
+
+Avoid adding a new query framework if the existing dependencies already meet the need.
+
+Generate database types from the actual schema when access permits. If types must be written manually from the migrations, label that fact and document the later generation command.
+
+Keep hardcoded homepage content in place until Phase 4. Do not present existing in-memory forms as Supabase-connected.
+
+**8. Remote access and application status**
+
+The publishable key is an application credential; it does not authorize schema migrations or administrator provisioning.
+
+If an authorized Supabase management connection already exists, confirm that its project matches VITE_SUPABASE_URL before applying migrations. Use only the intended Abuja Elite project.
+
+If management access is unavailable:
+
+* Complete all local code, migrations, documentation, and available checks.
+* Provide the exact migration files and execution order for the user’s Supabase SQL Editor.
+* Provide verification SQL separately from migration SQL.
+* Mark remote migration application, bucket creation, and administrator provisioning as pending.
+* Do not request a service_role key as a workaround for running DDL.
+* Do not claim the database is configured merely because SQL files exist.
+
+Never reset a database, drop unrelated objects, or apply changes to another project.
+
+**9. Verification**
+
+Run the production build, TypeScript checks, and existing relevant lint checks.
+
+Inspect the homepage at mobile and desktop sizes for regressions.
+
+Where database access permits, verify:
+
+* Migrations apply successfully.
+* Every application table has RLS enabled.
+* Public callers can read published content but cannot read drafts.
+* Ordinary authenticated users do not gain admin privileges.
+* Public callers cannot read submissions or mutate content.
+* Only authorized administrators can manage content and upload media.
+* Draft media remains inaccessible to public callers.
+* Invalid statuses, duplicate constraints, and broken foreign-key references are rejected.
+
+Use local or transactional fixtures where possible. Do not leave fictional public records in the live project.
+
+Tests of public access must use the public role or ordinary user session, not an elevated credential that bypasses RLS.
+
+If a check cannot run, report it as unverified and give the exact remaining step. A successful build is not proof of database security or connectivity.
+
+**10. Completion report**
+
+Return:
+
+1. What you found in the existing repository.
+2. Files created, changed, or removed.
+3. Database schema, administrator model, and RLS summary.
+4. Storage configuration and remaining public-media work.
+5. Auth/client/data-access implementation.
+6. Build, type-check, lint, and access-test results.
+7. Exact SQL or dashboard actions the user still needs to perform.
+8. Any retained Express/Drizzle infrastructure and why it remains.
+9. Outstanding blockers and deferred Phase 3/4 work.
+
+Clearly distinguish:
+
+* Implemented locally.
+* Applied to remote Supabase.
+* Verified successfully.
+* Pending user action or unverified.
+
+Do not mark Phase 2 complete while required remote setup or access checks remain pending.
+
+Stop after this report. Do not begin the full admin dashboard, redesign the website, or migrate production hosting.

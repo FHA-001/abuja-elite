@@ -1,0 +1,52 @@
+Review and correct the Phase 2 Supabase foundation before we apply it remotely. Preserve the current website and remain within Phase 2.
+
+The supplied migration has these specific issues:
+
+1. Explicit table privileges
+
+For the ten Abuja Elite application tables only, revoke all existing table privileges from PUBLIC, anon, and authenticated before applying the intended grants.
+
+Then grant:
+
+* anon: SELECT on members, collaborations, events, stories, gallery_items, and site_settings only.
+* authenticated: SELECT, INSERT, UPDATE, DELETE on the ten application tables, with the existing RLS policies enforcing administrator-only mutations and submission access.
+
+Do not grant TRUNCATE, REFERENCES, or TRIGGER to either application role.
+
+Preserve the private administrator allowlist protections. Do not change grants on unrelated tables or Supabase system tables.
+
+2. Email integrity
+
+Change event_interests.normalized_email into a stored generated column derived from lower(btrim(email)). Retain the unique constraint on (event_id, normalized_email).
+
+Update hand-maintained TypeScript types and any callers so they do not insert or update that generated column.
+
+For newsletter_subscribers.normalized_email, retain normalization and uniqueness, and add sensible length and basic format constraints that reject empty or clearly malformed values. Full submission validation will still be implemented at the server boundary in Phase 4.
+
+3. Timestamp correctness
+
+Replace timezone('utc', now()) with now() in all timestamptz defaults, the updated_at trigger, and the story publication policy.
+
+Keep event storage as timestamptz and Africa/Lagos as the intended display timezone.
+
+4. Verification coverage
+
+Improve the read-only verification file to:
+
+* List all ten expected tables, explicitly identifying missing tables and disabled RLS.
+* List all six expected buckets, explicitly identifying missing buckets or incorrect privacy, size, and MIME settings.
+* Show relevant policy roles, commands, USING expressions, and WITH CHECK expressions.
+* Check effective table privileges for anon and authenticated, including absence of TRUNCATE, REFERENCES, and TRIGGER.
+* Check that anon and authenticated cannot directly read or modify app_private.admin_users.
+* Inspect administrator helper security settings and function execution grants.
+* Display current_user and auth.uid() alongside the administrator RPC result, explaining that SQL Editor identity is different from a signed-in website session.
+
+Provide a separate behavioral test script or exact test procedure for anonymous, ordinary authenticated, and allowlisted administrator access. Cover published/draft content, future-dated stories, private settings, submission privacy, denied writes, and allowed admin operations.
+
+Use rollback-isolated fixtures for SQL tests. Do not leave fictional records in the remote project or claim empty-table queries prove RLS works. Storage API upload/download testing must be identified separately from inspecting Storage policies.
+
+If the original migration has not been applied, update it directly. If it has already been applied, preserve it and provide a corrective migration.
+
+Run available type checks and the build. Return the complete corrected migration and verification files, summarize the changes, and clearly mark remote checks as pending unless actually performed.
+
+Do not begin Phase 3.

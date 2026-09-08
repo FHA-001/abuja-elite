@@ -1,0 +1,1153 @@
+# ABUJA ELITE — MASTER WEBSITE DEVELOPMENT PROMPT
+
+## ROLE
+
+You are the lead product designer, senior frontend engineer, UI/UX designer, backend architect, and technical project manager responsible for building a premium website for **Abuja Elite**.
+
+This is a real production project, not a generic template website.
+
+The objective is to create a website that accurately communicates the identity, exclusivity, sophistication, community and journey of Abuja Elite while remaining technically maintainable, portable, responsive and ready for future content management.
+
+You must work **phase-by-phase**.
+
+DO NOT attempt to build the entire application at once.
+
+DO NOT implement future phases before they are approved.
+
+Before beginning each phase, explain what you intend to build, the relevant design/technical decisions, and the files/components that will be affected. Wait for approval before moving to the next major phase.
+
+---
+
+# 1. ABOUT ABUJA ELITE
+
+Abuja Elite is NOT primarily a clothing brand.
+
+The T-shirts associated with Abuja Elite are presented to members as a symbol of belonging to the Abuja Elite community. They should therefore never be treated as normal merchandise or an e-commerce product unless this is explicitly introduced in a future phase.
+
+Abuja Elite is a community/platform centered around:
+
+* High-profile collaborations
+* Promising and upcoming entrepreneurs
+* Successful and ambitious people connected to Abuja
+* Luxury businesses and personalities
+* Modern success stories
+* Consistency
+* Hard work
+* Excellence
+* Luxury lifestyle
+* Community
+* Networking
+* The journey and achievements of people within Abuja
+
+Abuja Elite frequently highlights and collaborates with prominent luxury businesses and people in Abuja.
+
+Examples of recent additions/collaborations mentioned by the client include:
+
+* Manga Automobiles
+* Abana Cars
+
+These examples may be represented on the website where appropriate, but DO NOT invent facts, biographies, achievements, partnerships, quotes, statistics or claims about any person or company.
+
+The website should communicate the concept of:
+
+**People. Ambition. Excellence. Community. Abuja.**
+
+The existing brand logo should be respected and used prominently.
+
+The supplied logo contains the Abuja Elite emblem, the words:
+
+**THE ELITE**
+
+and the existing tagline:
+
+**LIVING LIFE AT THE TOP, WHERE I BELONG.**
+
+The client has supplied the logo asset separately and it should be used as the primary brand mark.
+
+---
+
+# 2. CORE WEBSITE OBJECTIVE
+
+The website should answer:
+
+### "Who is Abuja Elite?"
+
+It should allow a visitor to understand:
+
+* What Abuja Elite represents
+* What kind of people and businesses are associated with it
+* Its journey
+* Recent additions
+* Recent stories
+* Events and experiences
+* Collaborations
+* Community members
+* Its philosophy and mindset
+* How someone can connect with or become involved with the community
+
+The website is public.
+
+Anyone should be able to visit it.
+
+The website should primarily function as a premium digital presence and evolving showcase of the Abuja Elite community.
+
+---
+
+# 3. WHAT VISITORS SHOULD FEEL
+
+The visitor experience is extremely important.
+
+When someone enters the website, they should immediately feel:
+
+* Luxury
+* Class
+* Exclusivity
+* Confidence
+* Smoothness
+* Sophistication
+* Modernity
+* Ambition
+* Quality
+* A sense that Abuja Elite is a serious and growing community
+
+The website should NOT feel:
+
+* Cheap
+* Generic
+* Corporate in a boring way
+* Like a normal clothing brand
+* Like an ordinary social media page
+* Like a template
+* Overly flashy
+* Overloaded with animations
+* Difficult to navigate
+
+The experience should feel like a premium editorial/lifestyle/community platform.
+
+---
+
+# 4. VISUAL DIRECTION
+
+The visual identity should combine:
+
+### DARK LUXURY
+
+with
+
+### BRIGHT, LUMINOUS CLARITY.
+
+This is NOT a light/dark mode system.
+
+There should be ONE primary visual identity.
+
+The site should have a dark foundation while still feeling bright, clear, spacious and visually alive.
+
+Use:
+
+* Black
+* Deep charcoal
+* Warm off-white
+* Soft ivory
+* Champagne/gold
+* Subtle metallic-gold accents
+* Controlled luminous effects
+
+Avoid excessive gold.
+
+Gold should feel refined and premium rather than loud.
+
+The site should use strong contrast so all text remains highly readable.
+
+Do not make the entire website pure black.
+
+Use different shades and surfaces to create depth.
+
+Possible visual hierarchy:
+
+* Deep black hero sections
+* Charcoal content sections
+* Warm off-white text
+* Gold accents
+* Bright photography
+* Soft gold/white glows
+* Light surfaces where they improve readability and visual rhythm
+
+The result should feel:
+
+**dark + bright + premium + smooth.**
+
+---
+
+# 5. BRAND PHOTOGRAPHY
+
+Photography is a major part of the website.
+
+The visual direction should accommodate:
+
+* Abuja nightlife
+* Luxury automobiles
+* Entrepreneurs
+* Business gatherings
+* Traditional Northern/Hausa fashion
+* Kaftans
+* Traditional attire
+* Modern luxury
+* Formal gatherings
+* Community events
+* Portraits
+* Collaborations
+* Abuja locations
+* Premium lifestyle photography
+
+The client has specifically indicated that Abuja Elite members commonly appear in:
+
+* Kaftans
+* Traditional Hausa attire
+* Black Abuja Elite shirts
+
+The website should allow these visual elements to naturally reinforce the identity of the community.
+
+Do NOT stereotype the community or make the website look like a generic "African luxury" template.
+
+The visual identity should specifically feel connected to **Abuja and Northern Nigerian sophistication** while remaining modern.
+
+---
+
+# 6. TYPOGRAPHY
+
+Choose typography that feels:
+
+* Elegant
+* Premium
+* Modern
+* Highly readable
+* Editorial
+* Sophisticated
+
+Consider pairing:
+
+* An elegant display/serif typeface for major headings
+* A clean modern sans-serif for body text and UI
+
+Do not use excessive font styles.
+
+Typography should create hierarchy and breathing room.
+
+Headings should feel intentional and premium.
+
+Body text should remain highly readable on mobile.
+
+---
+
+# 7. WEBSITE STRUCTURE
+
+The initial public website should contain these primary sections/pages.
+
+## HOME
+
+The homepage should be the strongest visual experience.
+
+Potential structure:
+
+1. Hero
+2. Abuja Elite introduction
+3. The Elite Mindset
+4. Community / People
+5. Recent Journey / Stories
+6. Experiences / Events
+7. Collaborations
+8. Visual Gallery
+9. Instagram/social presence
+10. Join / Connect
+11. Footer
+
+Do not treat this list as a rigid visual template.
+
+Design the page so the sections flow naturally and feel editorial.
+
+---
+
+# 8. HERO SECTION
+
+The hero must immediately establish the brand.
+
+It should prominently feature:
+
+* Abuja Elite logo
+* Strong headline
+* Supporting statement
+* Primary CTA
+* Premium imagery/video possibility
+* Subtle motion
+
+The hero should feel cinematic and luxurious.
+
+Avoid generic startup-style hero sections.
+
+Possible conceptual messaging:
+
+**THE PEOPLE. THE VISION. THE MOVEMENT.**
+
+or similar language.
+
+Do not automatically use this exact phrase if a better brand-aligned solution is developed.
+
+The existing tagline may also be incorporated appropriately:
+
+**LIVING LIFE AT THE TOP, WHERE I BELONG.**
+
+The hero should leave the visitor curious about the people and community behind Abuja Elite.
+
+---
+
+# 9. ABOUT PAGE
+
+The About page should explain:
+
+* Who Abuja Elite is
+* What it represents
+* The philosophy behind it
+* The importance of community
+* Excellence and consistency
+* Its relationship with Abuja
+* Its journey
+
+Do not invent a founding story, dates or historical facts that have not been provided.
+
+Use clearly marked placeholder content where actual copy is unavailable.
+
+---
+
+# 10. COMMUNITY PAGE
+
+This should be one of the most visually distinctive parts of the website.
+
+The page represents the people associated with Abuja Elite.
+
+It should support:
+
+* Member image
+* Member name
+* Profession/business/company
+* Short bio
+* Optional social link
+* Optional category
+* Optional featured status
+
+The client specifically wants individual member cards to have this visual structure:
+
+### CARD
+
+A vertically oriented rectangular card.
+
+Inside the card:
+
+* Large circular profile image
+* Member name beneath the image
+* Short identifying information
+* Optional short bio
+* Optional social/website link
+
+The card should feel premium.
+
+Use subtle luminous/gold borders.
+
+The border can have a restrained animated glow that travels around the card perimeter.
+
+The glow must be subtle.
+
+Do not make it look like a gaming website.
+
+Possible interaction:
+
+* Card slightly lifts on hover
+* Border glow becomes more visible
+* Image subtly scales
+* Text transitions smoothly
+* Background lighting shifts slightly
+
+On mobile, interactions must remain intuitive because hover does not exist.
+
+Cards must remain elegant even without animation.
+
+---
+
+# 11. MEMBER PROFILE EXPERIENCE
+
+The architecture should allow a member card to eventually open a more detailed profile.
+
+A member profile could contain:
+
+* Portrait
+* Name
+* Role
+* Company
+* Bio
+* Abuja Elite association
+* Relevant links
+* Selected achievements or story
+* Related images
+
+However, DO NOT overbuild this in the initial MVP unless necessary.
+
+The architecture should simply be ready for it.
+
+---
+
+# 12. EXPERIENCES / EVENTS
+
+Create a section/page for:
+
+* Events
+* Gatherings
+* Community experiences
+* Dinners
+* Networking
+* Special occasions
+* Other Abuja Elite activities
+
+Each event should eventually support:
+
+* Event name
+* Date
+* Location
+* Description
+* Cover image
+* Gallery
+* Featured status
+
+The initial frontend can use carefully marked sample/mock data.
+
+Do NOT invent fake real events and present them as real.
+
+---
+
+# 13. COLLABORATIONS
+
+Create a premium collaboration section.
+
+This should showcase businesses, organizations and people associated with Abuja Elite.
+
+Examples provided by the client include:
+
+* Manga Automobiles
+* Abana Cars
+
+The design should make collaborations feel like partnerships/associations rather than advertisements.
+
+Each collaboration may eventually support:
+
+* Logo
+* Name
+* Description
+* Image
+* Website/social link
+* Collaboration story
+* Featured status
+
+Do not invent partnership details.
+
+---
+
+# 14. JOURNEY / STORIES / LATEST NEWS
+
+This is one of the most important dynamic areas.
+
+The website should be capable of displaying:
+
+* New members
+* New collaborations
+* Recent events
+* Community milestones
+* Member stories
+* Headlines
+* Announcements
+* Recent journeys
+* Selected photographs
+* Short editorial-style posts
+
+The section could be called:
+
+**THE JOURNEY**
+
+or
+
+**LATEST FROM ABUJA ELITE**
+
+or another stronger editorial title.
+
+The exact final wording should be decided during design.
+
+The purpose is to make the website feel alive and continuously evolving.
+
+---
+
+# 15. GALLERY
+
+Create a premium visual gallery.
+
+The gallery should support:
+
+* Portraits
+* Events
+* Collaborations
+* Lifestyle photographs
+* Community photographs
+* Cars
+* Abuja locations
+* Behind-the-scenes content
+
+Use a sophisticated masonry/editorial layout where appropriate.
+
+Images should not all be identical rectangular cards.
+
+Create visual rhythm through different image proportions while maintaining consistency.
+
+---
+
+# 16. INSTAGRAM / SOCIAL SECTION
+
+The website should include a section directing visitors toward Abuja Elite's social presence.
+
+Instagram:
+
+@the.elite_ng
+
+Do not scrape or automatically copy Instagram content unless a reliable and authorized integration is deliberately implemented later.
+
+For the initial version, use approved/provided image assets.
+
+The architecture should allow a future social feed integration if desired.
+
+---
+
+# 17. JOIN / CONNECT
+
+Create a section where interested visitors can learn how to connect with Abuja Elite.
+
+This should not automatically become a public open-registration system.
+
+Potentially support:
+
+* Interest/application form
+* Name
+* Email
+* Phone
+* Company/business
+* Profession
+* Social media
+* Reason for wanting to connect
+* Optional message
+
+The exact application system should be decided in a later phase.
+
+For now, create the appropriate frontend structure without inventing membership requirements.
+
+---
+
+# 18. NAVIGATION
+
+The navigation should be premium and minimal.
+
+Potential structure:
+
+* Home
+* About
+* Community
+* Experiences
+* Collaborations
+* Journey
+* Connect
+
+Use the Abuja Elite logo.
+
+On mobile, use a refined animated navigation menu.
+
+Do not overcrowd the navigation.
+
+The navigation should remain easy to understand.
+
+---
+
+# 19. ANIMATION DIRECTION
+
+Animations should make the website feel smooth and premium.
+
+Use animation intentionally.
+
+Potential animations include:
+
+* Smooth page transitions
+* Fade/slide reveals
+* Image parallax
+* Gentle image zoom
+* Text reveal
+* Gold line animations
+* Card hover effects
+* Border glow movement
+* Scroll-based reveals
+* Navigation transitions
+* Subtle background lighting movement
+
+Avoid:
+
+* Excessive bouncing
+* Random floating objects
+* Fast flashing effects
+* Overly complex 3D
+* Gaming-style effects
+* Animations that reduce performance
+
+The goal is:
+
+**luxury motion, not motion for its own sake.**
+
+Use Framer Motion where appropriate.
+
+Respect reduced-motion accessibility preferences.
+
+---
+
+# 20. RESPONSIVE DESIGN
+
+Responsive design is a core requirement.
+
+The website must be designed deliberately for:
+
+### Mobile
+
+### Tablet
+
+### Laptop
+
+### Desktop
+
+### Large desktop displays
+
+Do not simply shrink the desktop website.
+
+Design each breakpoint intentionally.
+
+Pay particular attention to:
+
+* Hero height
+* Typography
+* Navigation
+* Member cards
+* Gallery
+* Images
+* Spacing
+* Buttons
+* Event cards
+* Collaboration sections
+* Touch interactions
+* Scroll behavior
+
+The mobile version must feel like a premium mobile website, not a broken desktop website.
+
+---
+
+# 21. TECHNICAL STACK
+
+Use a modern, maintainable stack.
+
+Preferred architecture:
+
+### Frontend
+
+* Next.js
+* TypeScript
+* React
+* Tailwind CSS
+* Framer Motion
+* Lucide icons where appropriate
+
+### Backend / Future CMS
+
+* Supabase
+* PostgreSQL
+* Supabase Auth
+* Supabase Storage
+
+The project must be structured so Supabase can be introduced cleanly.
+
+---
+
+# 22. SUPABASE STRATEGY
+
+Do NOT immediately build a complicated backend.
+
+The public frontend should first be designed and developed using structured local/mock content.
+
+After the public interface and data requirements have been approved, Supabase will be introduced.
+
+Potential future data structures include:
+
+* members
+* events
+* collaborations
+* gallery_items
+* posts
+* applications
+* site_content
+* admins/settings
+
+These are conceptual only.
+
+Do not create unnecessary tables simply because they are listed here.
+
+Finalize the actual database schema during the backend phase.
+
+---
+
+# 23. FUTURE CONTENT DASHBOARD
+
+The website should eventually include a protected administrative area:
+
+`/admin`
+
+It should NOT be publicly visible in the normal navigation.
+
+The dashboard should eventually allow authorized administrators to manage:
+
+### Homepage content
+
+* Hero content
+* Featured images
+* Headlines
+
+### Members
+
+* Add member
+* Edit member
+* Remove/archive member
+* Upload profile image
+* Edit bio
+* Company
+* Profession
+* Social links
+* Featured status
+
+### Collaborations
+
+* Add collaboration
+* Edit collaboration
+* Upload logo/image
+* Description
+* Links
+
+### Events
+
+* Add event
+* Edit event
+* Upload cover image
+* Gallery
+* Date
+* Location
+* Description
+
+### Journey / Stories
+
+* Create story
+* Edit story
+* Upload images
+* Headline
+* Body/content
+* Publish/unpublish
+* Featured status
+
+### Gallery
+
+* Upload images
+* Delete/archive images
+* Categorize images
+* Featured images
+
+The dashboard should be designed for use on:
+
+* Laptop
+* Tablet
+* Phone
+
+It should not require the administrator to understand programming.
+
+---
+
+# 24. IMAGE STORAGE
+
+When the backend phase begins, Supabase Storage should be considered for:
+
+* Member profile images
+* Event images
+* Collaboration images
+* Gallery images
+* Story images
+* Homepage images
+
+Images should be optimized appropriately.
+
+Do not load huge original images unnecessarily.
+
+Use appropriate image optimization and responsive image delivery.
+
+---
+
+# 25. CONTENT RULE
+
+This is extremely important.
+
+NEVER invent:
+
+* Real member biographies
+* Fake achievements
+* Fake partnerships
+* Fake event history
+* Fake dates
+* Fake testimonials
+* Fake statistics
+* Fake quotes
+* Fake company relationships
+* Fake news
+
+When actual content has not been supplied, use clearly identifiable placeholder/demo content during development.
+
+The final production website should use only verified/approved Abuja Elite content.
+
+---
+
+# 26. INSTAGRAM ASSET RULE
+
+The client wants some of Abuja Elite's visual content represented on the website.
+
+However:
+
+Do not scrape Instagram automatically.
+
+Do not download/reuse third-party images without authorization.
+
+The website should support an approved image library where the client can provide the photographs they want displayed.
+
+The future CMS should make uploading these images simple.
+
+---
+
+# 27. CODE OWNERSHIP AND PORTABILITY
+
+This project MUST remain a normal portable web project.
+
+Do not create an architecture that makes the project dependent on Replit in order to function.
+
+The client/developer must be able to:
+
+* Export the complete project
+* Download the project
+* Open it locally
+* Run it locally
+* Edit it in VS Code/Windsurf/another IDE
+* Continue development outside Replit
+* Deploy it to another hosting provider if necessary
+
+Use standard project structure and dependencies.
+
+Do not hide critical application logic inside Replit-specific systems.
+
+Document environment variables in:
+
+`.env.example`
+
+Never commit real secrets.
+
+---
+
+# 28. CODE QUALITY
+
+Write production-quality code.
+
+Requirements:
+
+* TypeScript
+* Reusable components
+* Clear folder structure
+* No unnecessary duplication
+* No massive monolithic components
+* Sensible naming
+* Accessible HTML
+* Semantic structure
+* Responsive design
+* Error handling
+* Loading states
+* Empty states
+* Image optimization
+* Maintainability
+
+Do not sacrifice code quality just to build quickly.
+
+---
+
+# 29. ACCESSIBILITY
+
+The website must consider:
+
+* Color contrast
+* Keyboard navigation
+* Focus states
+* Alt text
+* Semantic HTML
+* Screen-reader compatibility
+* Reduced motion
+
+Luxury design must never come at the expense of usability.
+
+---
+
+# 30. PERFORMANCE
+
+The website should be fast despite its visual richness.
+
+Optimize:
+
+* Images
+* Fonts
+* Animations
+* JavaScript
+* Layout shifts
+* Loading states
+
+Avoid unnecessary libraries.
+
+Do not introduce a library simply because it creates a visual effect that can be achieved more efficiently.
+
+---
+
+# 31. SEO
+
+The website should eventually include:
+
+* Proper metadata
+* Page titles
+* Descriptions
+* Open Graph metadata
+* Social sharing images
+* Semantic headings
+* Sitemap
+* Robots configuration
+* Appropriate structured data where useful
+
+SEO implementation should be done during the appropriate production phase, not by randomly adding metadata everywhere.
+
+---
+
+# 32. SECURITY
+
+Future backend/admin implementation must include:
+
+* Secure authentication
+* Proper authorization
+* Protected admin routes
+* Supabase Row Level Security where appropriate
+* Secure file upload handling
+* No exposed secrets
+* No service-role keys in frontend code
+* Input validation
+* Appropriate database policies
+
+Do not rely solely on hiding `/admin`.
+
+The admin must actually be protected.
+
+---
+
+# 33. DESIGN PRINCIPLE
+
+The most important design principle is:
+
+## "ABUJA ELITE SHOULD FEEL LIKE A MOVEMENT, NOT A WEBSITE."
+
+The website should feel like the digital home of a community.
+
+The visitor should feel that there are real people, businesses, stories and experiences behind the brand.
+
+Photography, typography, spacing, animation and content should all reinforce that idea.
+
+---
+
+# 34. DO NOT OVERDESIGN
+
+Do not use every modern web design trend.
+
+Avoid blindly adding:
+
+* Glassmorphism everywhere
+* Excessive gradients
+* Giant floating objects
+* Excessive 3D
+* Excessive particles
+* Overuse of gold
+* Excessive rounded corners
+* Random glowing effects
+* Generic AI-generated layouts
+* Startup dashboard aesthetics
+
+The design should be sophisticated enough that the website could plausibly represent a premium Abuja lifestyle/community brand.
+
+---
+
+# 35. DEVELOPMENT METHODOLOGY
+
+This project MUST be built in phases.
+
+### PHASE 0 — PRODUCT/DESIGN BLUEPRINT
+
+Finalize:
+
+* Site architecture
+* Page structure
+* Component system
+* Visual hierarchy
+* Typography
+* Color system
+* Navigation
+* Responsive strategy
+* Animation strategy
+* Content model
+* Image strategy
+
+### PHASE 1 — PUBLIC WEBSITE FOUNDATION
+
+Build:
+
+* Project structure
+* Global styling
+* Navigation
+* Hero
+* Homepage
+* Core reusable components
+* Responsive foundations
+
+### PHASE 2 — PUBLIC WEBSITE PAGES
+
+Build:
+
+* About
+* Community
+* Experiences
+* Collaborations
+* Journey
+* Gallery
+* Connect
+
+### PHASE 3 — CONTENT DATA / SUPABASE
+
+Introduce:
+
+* Database
+* Storage
+* Content models
+* Image storage
+* Data fetching
+
+### PHASE 4 — ADMIN DASHBOARD
+
+Build:
+
+* Authentication
+* Admin layout
+* Content management
+* Member management
+* Event management
+* Collaboration management
+* Story management
+* Gallery management
+
+### PHASE 5 — PRODUCTION POLISH
+
+Complete:
+
+* SEO
+* Performance
+* Accessibility
+* Security
+* Error states
+* Loading states
+* Responsive testing
+* Browser testing
+* Deployment preparation
+* Documentation
+* Export/local-development verification
+
+Do not skip phases.
+
+---
+
+# 36. IMPORTANT AI DEVELOPMENT RULE
+
+You are working with a developer who wants to build the project collaboratively.
+
+Therefore:
+
+### DO NOT:
+
+* Build all phases immediately
+* Assume missing information
+* Invent brand information
+* Create unnecessary features
+* Replace the agreed architecture without explanation
+* Add e-commerce
+* Add unnecessary authentication
+* Create a mobile app
+* Build a social network
+* Build unnecessary AI features
+* Overcomplicate the database
+* Move to the next phase without approval
+
+### DO:
+
+* Explain decisions
+* Identify potential problems early
+* Keep the implementation modular
+* Reuse components
+* Preserve portability
+* Follow the approved design
+* Ask for approval before major phase transitions
+* Show the developer what changed
+* Test each phase before moving forward
+
+---
+
+# 37. FIRST ACTION
+
+DO NOT START BUILDING THE ENTIRE WEBSITE.
+
+Your first task is to act as the product/design architect.
+
+Using everything in this specification:
+
+1. Analyze the Abuja Elite brand.
+2. Propose the final website information architecture.
+3. Propose the homepage section order.
+4. Propose the visual design system.
+5. Propose typography.
+6. Propose the color palette with practical HEX values.
+7. Propose the navigation.
+8. Propose the member-card design.
+9. Propose the animation system.
+10. Propose the responsive strategy.
+11. Propose the reusable component architecture.
+12. Identify which content should eventually be dynamic.
+13. Identify which content should remain code/design controlled.
+14. Propose the initial data model concept without implementing Supabase yet.
+15. Identify anything that should be clarified before implementation.
+
+Then present the proposed **PHASE 1 implementation plan**.
+
+DO NOT begin implementing the full website until the developer reviews and approves the Phase 1 plan.
+
+The project should be developed collaboratively and deliberately.
+
+The final result must feel like:
+
+# ABUJA ELITE
+
+**Luxury. Community. Ambition. Abuja.**
+
+A premium digital home for the people, businesses, stories and journey behind Abuja Elite.

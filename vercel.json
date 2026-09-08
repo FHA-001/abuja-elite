@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "installCommand": "npx --yes pnpm@10.28.2 install --frozen-lockfile",
+  "buildCommand": "npx --yes pnpm@10.28.2 build",
+  "outputDirectory": "artifacts/abuja-elite/dist/public",
+  "rewrites": [{"source": "/((?!assets/|favicon\\.|robots\\.txt|sitemap\\.xml).*)", "destination": "/index.html"}],
+  "headers": [
+    {"source": "/(.*)", "headers": [
+      {"key":"X-Content-Type-Options","value":"nosniff"},
+      {"key":"Referrer-Policy","value":"strict-origin-when-cross-origin"},
+      {"key":"Permissions-Policy","value":"camera=(), microphone=(), geolocation=()"},
+      {"key":"Content-Security-Policy","value":"default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"}
+    ]},
+    {"source":"/admin/:path*","headers":[{"key":"X-Robots-Tag","value":"noindex, nofollow"},{"key":"Cache-Control","value":"no-store"}]},
+    {"source":"/assets/:path*","headers":[{"key":"Cache-Control","value":"public, max-age=31536000, immutable"}]}
+  ]
+}

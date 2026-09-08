@@ -1,0 +1,102 @@
+Proceed with Abuja Elite Phase 3A — Admin Login and Dashboard Foundation.
+
+The Supabase migration has been applied remotely. The user has verified:
+
+* All ten application tables exist with RLS enabled.
+* All six private Storage buckets have the intended restrictions.
+* Application-role table privileges match the intended configuration.
+* Public, administrator, and Storage policies match the migration.
+* Administrator helpers match the intended definitions.
+* The initial administrator has been created and allowlisted.
+* Simulated administrator authorization returns true.
+* Simulated non-administrator authorization returns false.
+* Authenticated non-administrators and anonymous visitors can read published members but cannot read drafts.
+* Non-administrator member INSERT, UPDATE, and DELETE attempts are blocked.
+
+These are database checks, not completed browser login or Storage API tests. Continue feature development and verify those workflows as they become available.
+
+1. Inspect the existing foundation
+
+Read the current Supabase client, auth helpers, useSupabaseAuth hook, database types, data-access modules, routing, and project instructions.
+
+Reuse the current React/Vite, Wouter, Tailwind, and component stack. Preserve the approved public homepage and visual identity.
+
+The original migration has now been applied. Any further database changes must use a new migration.
+
+2. Build /admin/login
+
+Create a polished, responsive login screen using Abuja Elite’s dark, gold, and warm-ivory identity.
+
+Include:
+
+* Email and password fields with accessible labels.
+* Password visibility control.
+* Appropriate autocomplete attributes.
+* Validation, submission loading, and clear error states.
+* Protection against duplicate submissions.
+* Supabase email/password sign-in.
+* Administrator authorization through is_current_user_admin().
+
+A successful login alone must not grant dashboard access.
+
+For authenticated users without administrator authorization, show a clear access-denied state with a working sign-out action. For network or authorization-check failures, fail closed and offer retry or sign-out.
+
+Do not add a public administrator signup flow or hardcode credentials.
+
+3. Build the protected /admin layout
+
+Support session initialization, refresh, direct navigation, and sign-out.
+
+Render protected content only after both authentication and administrator authorization succeed. Avoid briefly exposing dashboard content during loading.
+
+Handle expired sessions and clear administrator-specific cached data on sign-out or account changes. Keep database and Storage authorization enforced by the existing RLS policies.
+
+Use an accessible mobile navigation drawer and a desktop sidebar, with keyboard support, focus management, and visible focus states.
+
+4. Build a useful dashboard home
+
+Show genuine Supabase-backed counts for:
+
+* Members.
+* Collaborations.
+* Events.
+* Stories.
+* Gallery items.
+* New applications.
+* New contact messages.
+* Pending event-interest records only if the actual schema supports that status; otherwise show total event interests.
+* Subscribed newsletter records.
+
+Inspect the actual schema before implementing queries. Use efficient count queries rather than downloading whole tables.
+
+Distinguish loading, query failure, and a genuine zero count. Do not substitute invented statistics or render failures as zero.
+
+Provide a link back to the public website and a working sign-out control.
+
+Only enable navigation destinations implemented in this step. Clearly identify upcoming modules without creating broken links.
+
+5. Scope
+
+Complete the login, authorization handling, responsive admin layout, and dashboard overview.
+
+Full content editors, gallery management, submission review screens, and settings editing will follow in Phase 3B. Keep the public content integration for Phase 4.
+
+Track remaining Auth configuration—including disabling public signup, password recovery, and production email setup—in the project documentation.
+
+6. Verification
+
+Run the build and TypeScript checks, and inspect mobile and desktop layouts.
+
+Verify all workflows available without the user’s credentials. Provide concise manual steps for the user to test:
+
+* Their actual administrator login.
+* Dashboard refresh and direct navigation.
+* Sign-out and protected-route access afterward.
+* Invalid credentials.
+* Mobile navigation.
+
+Do not request the administrator password in chat or logs. Do not claim actual login was tested unless it was.
+
+Avoid repeating the completed database catalog checks. Add targeted checks only for behavior introduced or changed here.
+
+Return the changed files, implemented behavior, verification results, and any remaining blockers. Stop after Phase 3A so we can review the working login and dashboard.

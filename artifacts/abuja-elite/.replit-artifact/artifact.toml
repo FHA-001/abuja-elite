@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Abuja Elite"
+description = "A premium public website for Abuja Elite, a luxury community and editorial platform celebrating ambitious people, businesses, stories, and experiences connected to Abuja."
+version = "1.0.0"
+id = "artifacts/abuja-elite"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 26167
+
+[services.development]
+run = "pnpm --filter @workspace/abuja-elite run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/abuja-elite", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/abuja-elite/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "26167"
+BASE_PATH = "/"

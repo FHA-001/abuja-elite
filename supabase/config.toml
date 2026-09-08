@@ -1,0 +1,9 @@
+project_id = "abuja-elite"
+
+# These public handlers validate each request themselves. New publishable keys
+# are not user JWTs. No browser is allowed to call the privileged write RPC.
+[functions.submit-interest]
+verify_jwt = false
+
+[functions.public-media]
+verify_jwt = false
