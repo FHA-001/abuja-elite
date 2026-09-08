@@ -64,6 +64,7 @@ export interface AdminAuthState {
   hasSession: boolean;
   email?: string | null;
   displayName?: string | null;
+  userId?: string | null;
   onRetry: () => void;
 }
 
@@ -840,7 +841,7 @@ export default function AdminDashboard({
           )}
         </div>
       </main>
-      {editor && <Editor key={`${editor.resource}-${editor.record ? getId(editor.record) : 'new'}`} resource={editor.resource} record={editor.record} onClose={() => setEditor(undefined)} onCreate={onCreate} onUpdate={onUpdate} onUploadMedia={onUploadMedia} createMediaPreview={createMediaPreview} resolveMediaUrl={resolveMediaUrl} userId={auth.email} />}
+      {editor && <Editor key={`${editor.resource}-${editor.record ? getId(editor.record) : 'new'}`} resource={editor.resource} record={editor.record} onClose={() => setEditor(undefined)} onCreate={onCreate} onUpdate={onUpdate} onUploadMedia={onUploadMedia} createMediaPreview={createMediaPreview} resolveMediaUrl={resolveMediaUrl} userId={auth.userId} />}
     </div>
   );
 }
