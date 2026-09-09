@@ -67,6 +67,11 @@
   --spacing: 0.25rem;
   --elevate-1: rgba(255,255,255,0.035);
   --elevate-2: rgba(255,255,255,0.07);
+  --public-canvas: #14110D;
+  --public-surface: #211B14;
+  --public-hover-surface: #2A2319;
+  --public-body-text: #C9C0B2;
+  --public-gold-label: #E0B25C;
 }
 
 .dark {
