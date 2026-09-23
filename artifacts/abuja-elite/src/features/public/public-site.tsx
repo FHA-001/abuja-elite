@@ -12,7 +12,57 @@ const navLinks=[['About','/about'],['Community','/members'],['Experiences','/exp
 export function Metadata({title,description,noindex=false}:{title:string;description:string;noindex?:boolean}){
  const[location]=useLocation();useEffect(()=>{document.title=title==='Abuja Elite'?title:`${title} | Abuja Elite`;const set=(key:string,value:string,property=false)=>{let el=document.head.querySelector<HTMLMetaElement>(`meta[${property?'property':'name'}="${key}"]`);if(!el){el=document.createElement('meta');el.setAttribute(property?'property':'name',key);document.head.append(el);}el.content=value;};set('description',description);set('robots',noindex?'noindex, nofollow':'index, follow');set('og:title',document.title,true);set('og:description',description,true);set('twitter:title',document.title);set('twitter:description',description);const origin=import.meta.env.VITE_SITE_URL;let canonical=document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');if(origin){if(!canonical){canonical=document.createElement('link');canonical.rel='canonical';document.head.append(canonical);}canonical.href=origin.replace(/\/$/,'')+location;}else canonical?.remove();},[title,description,noindex,location]);return null;
 }
-export function PublicNav(){const[open,setOpen]=useState(false),[location]=useLocation();const button=useRef<HTMLButtonElement>(null);useEffect(()=>{setOpen(false);window.scrollTo({top:0,behavior:'instant'});},[location]);useEffect(()=>{if(!open)return;const close=(e:KeyboardEvent)=>{if(e.key==='Escape'){setOpen(false);button.current?.focus();}};window.addEventListener('keydown',close);return()=>window.removeEventListener('keydown',close);},[open]);useEffect(()=>{const handleResize=()=>{if(window.innerWidth>=1024)setOpen(false);};window.addEventListener('resize',handleResize);return()=>window.removeEventListener('resize',handleResize);},[open]);return <header className="elite-nav scrolled"><div className="elite-shell flex h-[76px] items-center justify-between gap-4"><button ref={button} className="outline-button public-header-hamburger" onClick={()=>setOpen(!open)} aria-expanded={open} aria-controls="public-menu" aria-label={open?'Close menu':'Open menu'}>{open?<X size={18}/>:<Menu size={18}/>}</button><Link href="/" className="public-brand"><img src={logo} alt="Abuja Elite" width="38" height="38"/><span>ABUJA ELITE</span></Link><nav className="public-header-nav" aria-label="Main navigation">{navLinks.map(([label,path])=><Link key={path} href={path} className="nav-link" aria-current={location===path?'page':undefined}>{label}</Link>)}</nav><Link className="gold-button public-header-cta" href="/connect">Connect <ArrowUpRight size={14}/></Link></div>{open&&<nav id="public-menu" className={`public-mobile-nav ${open?'open':''}`} aria-label="Mobile navigation">{[...navLinks,['Connect','/connect'] as const].map(([label,path])=><Link href={path} key={path} onClick={()=>setOpen(false)}>{label}</Link>)}</nav>}</header>;}
+export function PublicNav(){
+  const[open,setOpen]=useState(false),[location]=useLocation();
+  const button=useRef<HTMLButtonElement>(null);
+  useEffect(()=>{setOpen(false);window.scrollTo({top:0,behavior:'instant'});},[location]);
+  useEffect(()=>{
+    if(!open)return;
+    const close=(e:KeyboardEvent)=>{if(e.key==='Escape'){setOpen(false);button.current?.focus();}};
+    window.addEventListener('keydown',close);
+    return()=>window.removeEventListener('keydown',close);
+  },[open]);
+  useEffect(()=>{
+    const handleResize=()=>{if(window.innerWidth>=1024)setOpen(false);};
+    window.addEventListener('resize',handleResize);
+    return()=>window.removeEventListener('resize',handleResize);
+  },[open]);
+  useEffect(()=>{
+    const cleanup = open ? () => { document.body.style.overflow = ''; } : undefined;
+    if(open) document.body.style.overflow='hidden';
+    return cleanup;
+  },[open]);
+  return <>
+    <header className="elite-nav scrolled">
+      <div className="elite-shell flex h-[76px] items-center justify-between gap-4">
+        <button ref={button} className="outline-button public-header-hamburger" onClick={()=>setOpen(!open)} aria-expanded={open} aria-controls="public-menu" aria-label={open?'Close menu':'Open menu'}>
+          {open?<X size={18}/>:<Menu size={18}/>}
+        </button>
+        <Link href="/" className="public-brand">
+          <img src={logo} alt="Abuja Elite" width="38" height="38"/>
+          <span>ABUJA ELITE</span>
+        </Link>
+        <nav className="public-header-nav" aria-label="Main navigation">
+          {navLinks.map(([label,path])=><Link key={path} href={path} className="nav-link" aria-current={location===path?'page':undefined}>{label}</Link>)}
+        </nav>
+        <Link className="gold-button public-header-cta" href="/connect">Connect <ArrowUpRight size={14}/></Link>
+      </div>
+    </header>
+    {open&&<>
+      <div className="public-drawer-backdrop" onClick={()=>setOpen(false)} aria-hidden="true"/>
+      <nav id="public-menu" className={`public-drawer ${open?'open':''}`} aria-label="Mobile navigation" role="dialog" aria-modal="true">
+        <div className="public-drawer-header">
+          <button className="public-drawer-close" onClick={()=>setOpen(false)} aria-label="Close menu">
+            <X size={20}/>
+          </button>
+        </div>
+        <div className="public-drawer-links">
+          {[...navLinks,['Connect','/connect'] as const].map(([label,path])=><Link href={path} key={path} onClick={()=>setOpen(false)} className="public-drawer-link">{label}</Link>)}
+        </div>
+      </nav>
+    </>}
+  </>;
+}
 export function PublicFooter(){const{data}=useSettings();const instagram=safeExternalUrl(data?.instagram_url)||'https://www.instagram.com/the.elite_ng';return <footer className="public-footer elite-shell"><div><img src={logo} alt="The Elite logo" width="60" height="60"/><p>{data?.footer_text||'Living life at the top, where I belong.'}</p></div><nav aria-label="Footer"><Link href="/connect">Connect</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><a href={instagram} target="_blank" rel="noopener noreferrer">Instagram <Instagram size={14}/></a><Link href="/admin/login">Editorial desk</Link></nav><small> {new Date().getFullYear()} Abuja Elite · Abuja, Nigeria</small></footer>;}
 export function PublicShell({children,title,description}:{children:ReactNode;title:string;description:string}){return <div className="elite-page noise"><Metadata title={title} description={description}/><a className="skip-link" href="#main-content">Skip to content</a><PublicNav/><main id="main-content" className="public-main">{children}</main><PublicFooter/></div>;}
 export function PublicImage({resource,record,large=false}:{resource:PublicResource;record:PublicRecord;large?:boolean}){const path=imagePath(record),origin=import.meta.env.VITE_SUPABASE_URL;const src=path&&origin?`${origin}/functions/v1/public-media?resource=${resource}&id=${record.id}&v=${encodeURIComponent(path)}`:undefined;const[broken,setBroken]=useState(false);useEffect(()=>setBroken(false),[src]);const initials=resource==='members'&&record.name?record.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase():null;return <div className={`public-image ${resource==='members'?'portrait':''} ${large?'large':''}`}>{src&&!broken?<img src={src} alt={record.alt_text||record.name||record.title||'Abuja Elite photograph'} loading={large?'eager':'lazy'} decoding="async" onError={()=>setBroken(true)}/>:initials?<div className="member-initials" aria-label={path?'Image unavailable':'No photograph published'}>{initials}</div>:<div className="image-empty" aria-label={path?'Image unavailable':'No photograph published'}>{resource==='members'?<Users size={32}/>:<ImageIcon size={32}/>}</div>}</div>;}
