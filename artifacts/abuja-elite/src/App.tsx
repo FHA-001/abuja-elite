@@ -37,7 +37,7 @@ function Home(){const{data:settings}=useSettings();return <div className="elite-
                 <a href="#about" className="gold-button focus-ring" data-testid="button-hero-discover">Discover the movement <ArrowDownRight size={15} /></a>
                 <a href="#connect" className="outline-button focus-ring" data-testid="button-hero-connect">Pull up a chair</a>
               </div>
-              <div className="mt-16 flex items-center gap-4 text-[#756f62]">
+              <div className="mt-16 flex items-center gap-4 text-[#C9C0B2]">
                 <span className="h-px w-12 bg-[#d5b264]" />
                 <span className="font-mono text-[.62rem] uppercase tracking-[.16em]">09° 04′ N / 07° 29′ E</span>
               </div>
@@ -62,7 +62,7 @@ function Home(){const{data:settings}=useSettings();return <div className="elite-
               </div>
               <div className="md:pt-2">
                 <p className="body-copy">We are building a public platform for a private feeling: the spark that happens when ambitious people gather with generosity, taste and intent. Abuja Elite is editorial, social and always in conversation with the city.</p>
-                <a href="#community" className="focus-ring mt-9 inline-flex items-center gap-3 border-b border-[#d5b264] pb-2 font-mono text-[.67rem] uppercase tracking-[.14em] text-[#f1e9d4]" data-testid="link-about-community">Meet the community <ArrowUpRight size={14} /></a>
+                <a href="#community" className="focus-ring mt-9 inline-flex items-center gap-3 border-b border-[#d5b264] pb-2 font-mono text-[.67rem] uppercase tracking-[.14em] text-[#51483B]" data-testid="link-about-community">Meet the community <ArrowUpRight size={14} /></a>
               </div>
             </div>
           </div>

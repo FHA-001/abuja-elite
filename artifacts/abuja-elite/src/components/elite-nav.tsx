@@ -31,7 +31,7 @@ export function EliteNav() {
           <span className="grid size-9 place-items-center border border-[#d5b264]/60 bg-[#090908]">
             <span className="font-serif text-lg text-[#d5b264]">A</span>
           </span>
-          <span className="hidden text-[.66rem] font-semibold uppercase tracking-[.22em] text-[#f1e9d4] sm:block">Abuja Elite</span>
+          <span className="hidden text-[.66rem] font-semibold uppercase tracking-[.22em] text-[#C9C0B2] sm:block">Abuja Elite</span>
         </a>
 
         <nav aria-label="Primary navigation" className="hidden items-center gap-7 lg:flex">
@@ -50,7 +50,7 @@ export function EliteNav() {
           aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
           aria-expanded={open}
           onClick={() => setOpen((value) => !value)}
-          className="focus-ring grid size-11 place-items-center border border-[#d5b264]/40 text-[#f1e9d4] lg:hidden"
+          className="focus-ring grid size-11 place-items-center border border-[#d5b264]/40 text-[#C9C0B2] lg:hidden"
           data-testid="button-mobile-menu"
         >
           {open ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
@@ -61,7 +61,7 @@ export function EliteNav() {
         <nav aria-label="Mobile navigation" className="elite-shell border-t border-[#d5b264]/20 bg-[#171510] pb-5 pt-4 lg:hidden">
           <div className="grid gap-1">
             {links.map(([label, href]) => (
-              <a key={href} href={href} onClick={closeMenu} className="focus-ring px-2 py-3 text-sm uppercase tracking-[.13em] text-[#b4ae9d]" data-testid={`link-mobile-${label.toLowerCase()}`}>
+              <a key={href} href={href} onClick={closeMenu} className="focus-ring px-2 py-3 text-sm uppercase tracking-[.13em] text-[#C9C0B2]" data-testid={`link-mobile-${label.toLowerCase()}`}>
                 {label}
               </a>
             ))}
