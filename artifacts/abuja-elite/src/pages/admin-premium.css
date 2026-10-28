@@ -1,0 +1,394 @@
+/* ==========================================================================
+   Abuja Elite — admin premium layer
+   Scoped to .ae-admin. Loaded after admin-dashboard.css and admin-extra.css,
+   so it only restyles; it never changes layout structure or behaviour.
+   Themes follow <html data-theme="light|dark"> (same toggle as the public site).
+   ========================================================================== */
+
+/* ---------- Tokens: dark + gold (default) ---------- */
+.ae-admin {
+  --ae-ink: hsl(32 22% 6%);
+  --ae-ink-soft: hsl(33 20% 9%);
+  --ae-panel: hsl(33 18% 11%);
+  --ae-panel-raised: hsl(33 17% 14%);
+  --ae-line: hsl(40 20% 20%);
+  --ae-paper: hsl(40 38% 93%);
+  --ae-dim: hsl(38 15% 68%);
+  --ae-gold: hsl(41 66% 62%);
+  --ae-green: hsl(161 48% 52%);
+
+  --ae-gold-1: #f1d38f;
+  --ae-gold-2: #c99a3f;
+  --ae-gold-glow: rgba(226, 183, 97, 0.4);
+  --ae-on-gold: hsl(32 28% 8%);
+  --ae-glass: rgba(255, 244, 220, 0.04);
+  --ae-glass-strong: rgba(24, 19, 12, 0.82);
+  --ae-glass-nav: rgba(14, 11, 7, 0.66);
+  --ae-glass-border: rgba(230, 188, 101, 0.18);
+  --ae-glass-border-strong: rgba(230, 188, 101, 0.42);
+  --ae-shadow: 0 22px 54px -26px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 235, 190, 0.07);
+  --ae-shadow-hover: 0 30px 62px -24px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(230, 188, 101, 0.25);
+  --ae-field-bg: rgba(255, 244, 220, 0.05);
+  --ae-hover: rgba(255, 244, 220, 0.06);
+  --ae-focus-ring: rgba(230, 188, 101, 0.3);
+  --ae-scrim: rgba(6, 4, 2, 0.72);
+  --ae-ambient-gold: rgba(230, 188, 101, 0.09);
+  --ae-ambient-green: rgba(31, 113, 92, 0.26);
+
+  --app-font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  background:
+    radial-gradient(46rem 30rem at 88% -4%, var(--ae-ambient-green), transparent 70%),
+    radial-gradient(40rem 28rem at 0% 100%, var(--ae-ambient-gold), transparent 70%),
+    var(--ae-ink);
+}
+
+/* ---------- Tokens: light cream editorial ---------- */
+html[data-theme='light'] .ae-admin {
+  --background: 40 38% 94%;
+  --foreground: 32 24% 11%;
+  --border: 38 26% 78%;
+  --input: 38 24% 80%;
+  --ring: 38 66% 33%;
+  --card: 40 40% 98%;
+  --card-foreground: 32 24% 11%;
+  --primary: 38 66% 33%;
+  --primary-foreground: 40 45% 96%;
+  --secondary: 162 28% 86%;
+  --muted: 38 30% 88%;
+  --muted-foreground: 33 18% 31%;
+
+  --ae-ink: hsl(40 38% 94%);
+  --ae-ink-soft: hsl(40 42% 97%);
+  --ae-panel: hsl(40 40% 98%);
+  --ae-panel-raised: hsl(40 36% 95%);
+  --ae-line: hsl(38 26% 80%);
+  --ae-paper: hsl(32 24% 11%);
+  --ae-dim: hsl(33 18% 33%);
+  --ae-gold: hsl(38 66% 33%);
+  --ae-green: hsl(161 60% 26%);
+
+  --ae-gold-1: #8a5f17;
+  --ae-gold-2: #6f4b10;
+  --ae-gold-glow: rgba(140, 100, 32, 0.32);
+  --ae-on-gold: hsl(40 45% 96%);
+  --ae-glass: rgba(255, 255, 255, 0.62);
+  --ae-glass-strong: rgba(255, 252, 245, 0.9);
+  --ae-glass-nav: rgba(250, 245, 234, 0.74);
+  --ae-glass-border: rgba(140, 100, 32, 0.22);
+  --ae-glass-border-strong: rgba(140, 100, 32, 0.5);
+  --ae-shadow: 0 22px 46px -26px rgba(80, 58, 20, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --ae-shadow-hover: 0 30px 54px -24px rgba(80, 58, 20, 0.4), 0 0 0 1px rgba(140, 100, 32, 0.3);
+  --ae-field-bg: rgba(255, 255, 255, 0.8);
+  --ae-hover: rgba(140, 100, 32, 0.07);
+  --ae-focus-ring: rgba(140, 100, 32, 0.25);
+  --ae-scrim: rgba(40, 30, 14, 0.5);
+  --ae-ambient-gold: rgba(196, 150, 60, 0.2);
+  --ae-ambient-green: rgba(31, 113, 92, 0.12);
+}
+html[data-theme='light']:has(.ae-admin) body { background: #f6f0e3; }
+
+html.theme-anim .ae-admin,
+html.theme-anim .ae-admin * {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease !important;
+}
+
+/* ---------- Typography ---------- */
+.ae-admin .ae-kicker,
+.ae-admin .ae-sidebar-caption,
+.ae-admin .ae-sidebar-label,
+.ae-admin .ae-session-chip,
+.ae-admin .ae-field-label,
+.ae-admin .ae-signout,
+.ae-admin .ae-status-line,
+.ae-admin .ae-upload-button,
+.ae-admin .ae-badge {
+  font-family: var(--app-font-sans);
+  font-weight: 600;
+}
+.ae-admin .ae-kicker { font-size: 0.68rem; letter-spacing: 0.18em; color: var(--ae-gold); }
+.ae-admin .ae-field-label { font-size: 0.7rem; letter-spacing: 0.08em; }
+.ae-admin .ae-page-title { font-weight: 500; letter-spacing: -0.03em; line-height: 0.98; font-size: clamp(2.6rem, 5vw, 5.1rem); }
+.ae-admin .ae-panel-title { font-weight: 600; letter-spacing: -0.015em; font-size: 1.75rem; }
+.ae-admin .ae-count { font-weight: 500; letter-spacing: -0.02em; }
+.ae-admin .ae-empty h3,
+.ae-admin .ae-empty h2 { font-family: var(--app-font-serif); font-weight: 600; font-size: 1.6rem; }
+
+/* ---------- Sidebar + topbar (glass) ---------- */
+.ae-admin .ae-sidebar {
+  border-right: 1px solid var(--ae-glass-border);
+  background: var(--ae-glass-strong);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow: 24px 0 60px -40px rgba(0, 0, 0, 0.5);
+}
+.ae-admin .ae-monogram,
+.ae-admin .ae-user-avatar {
+  background: linear-gradient(135deg, var(--ae-gold-1), var(--ae-gold-2));
+  color: var(--ae-on-gold);
+  font-family: var(--app-font-sans);
+  font-weight: 700;
+  border-radius: 12px;
+  box-shadow: 0 8px 22px -8px var(--ae-gold-glow);
+}
+.ae-admin .ae-user-avatar { border-radius: 999px; }
+.ae-admin .ae-sidebar-brand strong,
+.ae-admin .ae-sidebar-brand p.font-serif {
+  font-family: var(--app-font-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.ae-admin .ae-sidebar-label { color: var(--ae-gold); opacity: 0.85; letter-spacing: 0.16em; font-size: 0.64rem; }
+.ae-admin .ae-nav-item {
+  border-radius: 14px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  position: relative;
+}
+.ae-admin .ae-nav-item:hover { background: var(--ae-hover); transform: translateX(3px); }
+.ae-admin .ae-nav-item-active {
+  border-color: var(--ae-glass-border);
+  background: var(--ae-glass);
+  box-shadow: inset 3px 0 0 var(--ae-gold), var(--ae-shadow);
+}
+.ae-admin .ae-topbar {
+  background: var(--ae-glass-nav);
+  border-bottom: 1px solid var(--ae-glass-border);
+  backdrop-filter: blur(22px) saturate(1.5);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  font-weight: 600;
+}
+.ae-admin .ae-session-chip { font-size: 0.66rem; }
+.ae-admin .ae-status-line {
+  font-size: 0.66rem;
+  background: var(--ae-glass);
+  color: var(--ae-green);
+  border-color: color-mix(in srgb, var(--ae-green) 40%, transparent);
+}
+.ae-admin .ae-icon-button { border-radius: 12px; }
+.ae-admin .ae-icon-button:hover { background: var(--ae-hover); border-color: var(--ae-glass-border); }
+.ae-admin .ae-topbar-tools { display: flex; align-items: center; gap: 0.4rem; margin-left: auto; }
+
+/* Theme toggle (admin skin) */
+.ae-admin .theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ae-dim);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.ae-admin .theme-toggle:hover { border-color: var(--ae-glass-border); background: var(--ae-hover); color: var(--ae-paper); transform: none; }
+.ae-admin .theme-toggle-icon { color: var(--ae-gold); }
+.ae-admin .ae-gate-tools { position: absolute; top: 1rem; right: 1rem; }
+.ae-admin .ae-gate-tools .theme-toggle { border-color: var(--ae-glass-border); background: var(--ae-glass); }
+
+/* ---------- Overview metrics + panels ---------- */
+.ae-admin .ae-metric,
+.ae-admin .ae-panel,
+.ae-admin .ae-settings,
+.ae-admin .ae-inbox-row {
+  border-radius: 22px;
+  background: var(--ae-glass);
+  border: 1px solid var(--ae-glass-border);
+  box-shadow: var(--ae-shadow);
+  backdrop-filter: blur(16px) saturate(1.25);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+}
+.ae-admin .ae-metric {
+  transition: transform 0.5s var(--ease-out), box-shadow 0.4s ease, border-color 0.3s ease;
+}
+.ae-admin .ae-metric:hover,
+.ae-admin .ae-metric-active {
+  transform: translateY(-5px);
+  background: var(--ae-glass);
+  border-color: var(--ae-glass-border-strong);
+  box-shadow: var(--ae-shadow-hover);
+}
+.ae-admin .ae-panel-head,
+.ae-admin .ae-list-toolbar { border-bottom-color: var(--ae-glass-border); }
+.ae-admin .ae-inbox-row { text-align: left; transition: transform 0.4s var(--ease-out), border-color 0.3s ease, box-shadow 0.3s ease; }
+.ae-admin button.ae-inbox-row:hover { transform: translateY(-3px); border-color: var(--ae-glass-border-strong); box-shadow: var(--ae-shadow-hover); }
+.ae-admin .ae-settings { padding: 1.75rem; }
+.ae-admin .ae-detail-fields div { border-bottom-color: var(--ae-glass-border); }
+.ae-admin .ae-detail-fields dt { color: var(--ae-gold); font-weight: 600; }
+.ae-admin .ae-text-button { color: var(--ae-gold); font-weight: 600; }
+
+/* Record list */
+.ae-admin .ae-record-row { border-radius: 16px; }
+.ae-admin .ae-record-row:hover { background: var(--ae-hover); border-color: var(--ae-glass-border); }
+.ae-admin .ae-record-image,
+.ae-admin .ae-media-thumb { border-radius: 12px; background: linear-gradient(135deg, var(--ae-panel-raised), var(--ae-panel)); }
+.ae-admin .ae-record-image { border-color: var(--ae-glass-border); }
+.ae-admin .ae-pagination button {
+  border-color: var(--ae-glass-border-strong);
+  border-radius: 999px;
+  background: var(--ae-glass);
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.ae-admin .ae-pagination button:hover:not(:disabled) { background: var(--ae-hover); border-color: var(--ae-gold); }
+
+/* ---------- Status badges (clearer, readable in both themes) ---------- */
+.ae-admin .ae-badge {
+  padding: 0.28rem 0.6rem;
+  font-size: 0.64rem;
+  letter-spacing: 0.06em;
+  border-color: var(--ae-line);
+}
+.ae-admin .ae-badge-gold { background: color-mix(in srgb, var(--ae-gold) 12%, transparent); border-color: color-mix(in srgb, var(--ae-gold) 40%, transparent); color: var(--ae-gold); }
+.ae-admin .ae-badge-green { background: color-mix(in srgb, var(--ae-green) 12%, transparent); border-color: color-mix(in srgb, var(--ae-green) 40%, transparent); color: var(--ae-green); }
+.ae-admin .ae-badge-red { background: hsl(4 70% 55% / 0.1); border-color: hsl(4 67% 55% / 0.4); color: hsl(4 70% 52%); }
+html:not([data-theme='light']) .ae-admin .ae-badge-red { color: hsl(4 77% 74%); }
+.ae-admin .ae-error-row,
+.ae-admin .ae-inline-error { border-radius: 14px; background: hsl(4 70% 55% / 0.1); border-color: hsl(4 67% 55% / 0.4); color: hsl(4 70% 46%); }
+html:not([data-theme='light']) .ae-admin .ae-error-row,
+html:not([data-theme='light']) .ae-admin .ae-inline-error { color: hsl(4 77% 76%); }
+.ae-admin .ae-skeleton { border-radius: 12px; background: linear-gradient(90deg, var(--ae-hover), var(--ae-glass-border), var(--ae-hover)); background-size: 200% 100%; }
+
+/* ---------- Inputs ---------- */
+.ae-admin .ae-search-input,
+.ae-admin .ae-input,
+.ae-admin .ae-drawer input,
+.ae-admin .ae-drawer textarea,
+.ae-admin .ae-drawer select {
+  border-color: var(--ae-glass-border) !important;
+  border-radius: 14px !important;
+  background: var(--ae-field-bg) !important;
+  color: var(--ae-paper) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.ae-admin .ae-input:focus-visible,
+.ae-admin .ae-search-input:focus-visible,
+.ae-admin .ae-drawer input:focus-visible,
+.ae-admin .ae-drawer textarea:focus-visible,
+.ae-admin .ae-drawer select:focus-visible {
+  border-color: var(--ae-gold) !important;
+  box-shadow: 0 0 0 4px var(--ae-focus-ring) !important;
+  outline: none;
+}
+.ae-admin select.ae-input option,
+.ae-admin .ae-drawer select option { color: var(--ae-paper); background: var(--ae-ink-soft); }
+.ae-admin .ae-media-field { border-radius: 16px; border-color: var(--ae-glass-border); background: var(--ae-field-bg); }
+.ae-admin .ae-toggle-row { border-radius: 16px; border-color: var(--ae-glass-border); background: var(--ae-glass); }
+.ae-admin .ae-upload-button { border-radius: 999px; border-color: var(--ae-glass-border-strong); color: var(--ae-gold); font-size: 0.66rem; }
+.ae-admin .ae-upload-button:hover { background: color-mix(in srgb, var(--ae-gold) 12%, transparent); }
+
+/* ---------- Buttons ---------- */
+.ae-admin .gold-button,
+.ae-admin .outline-button {
+  position: relative;
+  overflow: hidden;
+  border-radius: 999px;
+  min-height: 46px;
+  padding: 0.8rem 1.4rem;
+  font: 600 0.8rem/1 var(--app-font-sans);
+  letter-spacing: 0.03em;
+  text-transform: none;
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s ease, border-color 0.25s ease, background 0.25s ease;
+}
+.ae-admin .gold-button {
+  background: linear-gradient(135deg, var(--ae-gold-1), var(--ae-gold-2));
+  border: 1px solid transparent;
+  color: var(--ae-on-gold);
+  box-shadow: 0 12px 28px -12px var(--ae-gold-glow), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.ae-admin .gold-button:hover,
+.ae-admin .gold-button:focus-visible {
+  background: linear-gradient(135deg, var(--ae-gold-1), var(--ae-gold-2));
+  border-color: transparent;
+  color: var(--ae-on-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 18px 34px -12px var(--ae-gold-glow), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  filter: brightness(1.05);
+}
+.ae-admin .outline-button {
+  background: var(--ae-glass);
+  border: 1px solid var(--ae-glass-border-strong);
+  color: var(--ae-paper);
+}
+.ae-admin .outline-button:hover,
+.ae-admin .outline-button:focus-visible {
+  background: var(--ae-hover);
+  border-color: var(--ae-gold);
+  color: var(--ae-paper);
+  transform: translateY(-2px);
+}
+
+/* ---------- Editor drawer ---------- */
+.ae-admin .ae-drawer-backdrop,
+.ae-admin .ae-sidebar-overlay {
+  background: var(--ae-scrim);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.ae-admin .ae-drawer {
+  color: var(--ae-paper);
+  background: var(--ae-glass-strong);
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  border-left: 1px solid var(--ae-glass-border);
+  box-shadow: -40px 0 90px -30px rgba(0, 0, 0, 0.55);
+  animation: ae-slide-in 0.4s var(--ease-out) both;
+}
+.ae-admin .ae-drawer-head,
+.ae-admin .ae-drawer-foot { border-color: var(--ae-glass-border); }
+.ae-admin .ae-drawer-foot { background: var(--ae-glass); }
+
+/* ---------- Login / gate ---------- */
+.ae-admin .ae-gate {
+  position: relative;
+  color: var(--ae-paper);
+  background:
+    radial-gradient(40rem 30rem at 78% 12%, var(--ae-ambient-green), transparent 70%),
+    radial-gradient(34rem 26rem at 8% 96%, var(--ae-ambient-gold), transparent 70%),
+    var(--ae-ink);
+}
+.ae-admin .ae-gate .body-copy { color: var(--ae-dim); }
+.ae-admin .ae-gate-card {
+  position: relative;
+  border-radius: 32px;
+  background: var(--ae-glass);
+  border: 1px solid var(--ae-glass-border);
+  backdrop-filter: blur(22px) saturate(1.3);
+  -webkit-backdrop-filter: blur(22px) saturate(1.3);
+  box-shadow: 0 40px 100px -40px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 235, 190, 0.08);
+  animation: ae-rise 0.9s var(--ease-out) both;
+}
+.ae-admin .ae-gate-title { font-weight: 500; letter-spacing: -0.03em; line-height: 0.98; }
+.ae-admin .ae-brand-lockup { font-family: var(--app-font-sans); font-weight: 700; letter-spacing: 0.2em; color: var(--ae-paper); }
+.ae-admin .ae-brand-lockup span:first-child { background: linear-gradient(135deg, var(--ae-gold-1), var(--ae-gold-2)); border-radius: 12px; }
+
+/* Inactivity warning dialog */
+.ae-admin .ae-inactivity-warning { background: var(--ae-scrim); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.ae-admin .ae-inactivity-warning-panel {
+  border-radius: 28px;
+  background: var(--ae-glass-strong);
+  border: 1px solid var(--ae-glass-border-strong);
+  color: var(--ae-paper);
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.7);
+}
+.ae-admin .ae-inactivity-warning h2 { font-family: var(--app-font-serif); font-weight: 600; font-size: 1.9rem; color: var(--ae-gold); }
+
+/* ---------- Motion ---------- */
+.ae-admin .ae-content { animation: ae-rise 0.7s var(--ease-out) both; }
+@keyframes ae-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+.ae-admin a:focus-visible,
+.ae-admin button:focus-visible { outline: 2px solid var(--ae-gold); outline-offset: 4px; }
+
+@media (max-width: 767px) {
+  .ae-admin .ae-gate-card { border-radius: 24px; }
+  .ae-admin .ae-sidebar { backdrop-filter: blur(28px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ae-admin *,
+  .ae-admin *::before,
+  .ae-admin *::after { animation: none !important; }
+}

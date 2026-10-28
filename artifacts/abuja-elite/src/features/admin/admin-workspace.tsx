@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useLocation } from 'wouter';
 import { Menu, X, LogOut, ExternalLink, Eye, EyeOff, Plus, ArrowRight, RefreshCw } from 'lucide-react';
 import { useSupabaseAuth } from '@/hooks/use-supabase-auth';
+import { useAdminInactivity } from '@/hooks/use-admin-inactivity';
 import { getSupabaseClient, supabaseConfig } from '@/lib/supabase/client';
 import { getAdminDashboardCounts } from '@/lib/supabase/content';
 import { uploadAdminMedia, createAdminMediaPreview, type MediaBucket } from '@/lib/supabase/storage';
@@ -12,6 +13,8 @@ import { useModal } from '@/hooks/use-modal';
 import { getDraft, setDraft, clearDraft, clearUserDrafts } from '@/lib/admin-draft-store';
 import '@/pages/admin-dashboard.css';
 import './admin-extra.css';
+import '@/pages/admin-premium.css';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const resources = {members:'Members',collaborations:'Collaborations',events:'Experiences',stories:'Stories',gallery_items:'Gallery',site_settings:'Homepage & settings'} as const;
 const inboxes = {applications:'Applications',contact_messages:'Messages',event_interests:'Event interest',newsletter_subscribers:'Newsletter'} as const;
@@ -28,8 +31,25 @@ export default function AdminWorkspace({loginOnly=false}:{loginOnly?:boolean}){
  const [section,setSection]=useState<Section>('overview'),[page,setPage]=useState(0),[search,setSearch]=useState(''),[nav,setNav]=useState(false);
  const [email,setEmail]=useState(''),[password,setPassword]=useState(''),[show,setShow]=useState(false),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
  const [editor,setEditor]=useState<{resource:ContentResource;record?:Row}>(),[selected,setSelected]=useState<Row>();
+ const [inactivityMessage,setInactivityMessage]=useState('');
  const navRef=useRef<HTMLElement>(null);useModal(navRef,()=>setNav(false),nav);
  const admin=auth.status==='authenticated'&&auth.isAdmin;
+ const handleInactivityLogout=useCallback(async()=>{
+  setBusy(true);setInactivityMessage('');
+  try{
+   const{error}=await getSupabaseClient().auth.signOut({scope:'local'});
+   if(error)throw error;
+   cache.removeQueries({queryKey:['admin']});
+   if(auth.user?.id)clearUserDrafts(auth.user.id);
+   auth.retry();
+   navigate('/admin/login?reason=inactivity',{replace:true});
+  }catch(e){
+   setInactivityMessage(errorText(e));
+  }finally{
+   setBusy(false);
+  }
+ },[auth,cache,navigate]);
+ const inactivity=useAdminInactivity(auth.user?.id??null,auth.session?.access_token??null,handleInactivityLogout);
  useEffect(()=>{cache.cancelQueries({queryKey:['admin']});cache.removeQueries({queryKey:['admin']});setEditor(undefined);setSelected(undefined);setMessage('');if(auth.user?.id)clearUserDrafts(auth.user.id);},[auth.user?.id,cache]);
  useEffect(()=>{if(!admin){cache.cancelQueries({queryKey:['admin']});cache.removeQueries({queryKey:['admin']});}},[admin,cache]);
  useEffect(()=>{if(auth.status==='unauthenticated'&&!loginOnly)navigate('/admin/login',{replace:true});if(admin&&loginOnly)navigate('/admin',{replace:true});},[auth.status,admin,loginOnly,navigate]);
@@ -53,8 +73,8 @@ export default function AdminWorkspace({loginOnly=false}:{loginOnly?:boolean}){
  }
  async function upload(file:File,ctx:{resource:DashboardResource;field:string;recordId?:string}){const bucket=buckets[ctx.resource];const path=await uploadAdminMedia(bucket,file,`${ctx.resource}/${ctx.recordId||'drafts'}/${ctx.field}`);return{path,previewUrl:await createAdminMediaPreview(bucket,path)};}
  async function preview(path:string){const r=path.split('/')[0] as ContentResource;if(!buckets[r])throw new Error('Unknown image category.');return createAdminMediaPreview(buckets[r],path);}
- if(!admin||loginOnly)return <div className="ae-admin"><main className="ae-gate"><div className="ae-gate-card"><Link href="/" className="ae-brand-lockup">ABUJA ELITE</Link><p className="ae-kicker mt-8">The editorial desk</p>
- {auth.status==='loading'||(admin&&loginOnly)?<><h1 className="ae-gate-title">Opening the desk.</h1><p role="status">Checking your session…</p></>:auth.status==='error'?<><h1 className="ae-gate-title">Let’s try that again.</h1><p role="alert">{auth.error?.message}</p><button className="gold-button mt-6" onClick={auth.retry}>Retry access check</button>{auth.session&&<button className="outline-button mt-4" onClick={logout} disabled={busy}>Sign out</button>}</>:auth.status==='authenticated'?<><h1 className="ae-gate-title">Access restricted.</h1><p>This account is not authorized to manage Abuja Elite.</p><button className="gold-button mt-6" onClick={logout} disabled={busy}>Sign out</button></>:<><h1 className="ae-gate-title">Welcome back.</h1><p className="body-copy mt-4">Sign in to manage the people, stories and experiences.</p><form className="mt-8 space-y-5" onSubmit={async e=>{e.preventDefault();if(busy)return;setBusy(true);setMessage('');try{const{error}=await getSupabaseClient().auth.signInWithPassword({email:email.trim(),password});if(error)throw new Error('Unable to sign in. Check your email and password.');setPassword('');}catch(e){setMessage(errorText(e));}finally{setBusy(false);}}}>
+ if(!admin||loginOnly)return <div className="ae-admin"><main className="ae-gate"><div className="ae-gate-card"><div className="ae-gate-tools"><ThemeToggle/></div><Link href="/" className="ae-brand-lockup">ABUJA ELITE</Link><p className="ae-kicker mt-8">The editorial desk</p>
+ {auth.status==='loading'||(admin&&loginOnly)?<><h1 className="ae-gate-title">Opening the desk.</h1><p role="status">Checking your session…</p></>:auth.status==='error'?<><h1 className="ae-gate-title">Let’s try that again.</h1><p role="alert">{auth.error?.message}</p><button className="gold-button mt-6" onClick={auth.retry}>Retry access check</button>{auth.session&&<button className="outline-button mt-4" onClick={logout} disabled={busy}>Sign out</button>}</>:auth.status==='authenticated'?<><h1 className="ae-gate-title">Access restricted.</h1><p>This account is not authorized to manage Abuja Elite.</p><button className="gold-button mt-6" onClick={logout} disabled={busy}>Sign out</button></>:<><h1 className="ae-gate-title">Welcome back.</h1><p className="body-copy mt-4">Sign in to manage the people, stories and experiences.</p>{new URLSearchParams(window.location.search).get('reason')==='inactivity'&&<p className="ae-kicker mt-4">You were signed out after 10 minutes of inactivity.</p>}<form className="mt-8 space-y-5" onSubmit={async e=>{e.preventDefault();if(busy)return;setBusy(true);setMessage('');try{const{error}=await getSupabaseClient().auth.signInWithPassword({email:email.trim(),password});if(error)throw new Error('Unable to sign in. Check your email and password.');setPassword('');}catch(e){setMessage(errorText(e));}finally{setBusy(false);}}}>
  <label className="ae-field">Email<Input value={email} onChange={setEmail} type="email" autoComplete="email" required/></label>
  <label className="ae-field">Password<span className="ae-password-wrap"><Input value={password} onChange={setPassword} type={show?'text':'password'} autoComplete="current-password" required/><button type="button" aria-label={show?'Hide password':'Show password'} aria-pressed={show} onClick={()=>setShow(!show)}>{show?<EyeOff size={18}/>:<Eye size={18}/>}</button></span></label>
  <button className="gold-button w-full" disabled={busy}>{busy?'Signing in…':'Sign in'}</button></form><button className="ae-text-button mt-5" disabled={busy||!supabaseConfig.isConfigured} onClick={async()=>{if(!email.trim()){setMessage('Enter your email address first.');return;}setBusy(true);try{const{error}=await getSupabaseClient().auth.resetPasswordForEmail(email.trim(),{redirectTo:window.location.origin+'/admin/reset-password'});if(error)throw error;setMessage('If this account can receive a reset email, a link will arrive shortly.');}catch{setMessage('Unable to request a reset. Please retry later.');}finally{setBusy(false);}}}>Forgot your password?</button></>}
@@ -62,11 +82,11 @@ export default function AdminWorkspace({loginOnly=false}:{loginOnly?:boolean}){
  const isContent=section in resources;
  const rows=records.data?.rows??[];
  const inboxRows=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(search.toLowerCase()));
- return <div className="ae-admin"><a className="skip-link" href="#admin-main">Skip to content</a><aside ref={navRef} className={`ae-sidebar ${nav?'ae-sidebar-open':''}`} role={nav?'dialog':undefined} aria-modal={nav||undefined} aria-label="Admin navigation">
+ return <div className="ae-admin"><a className="skip-link" href="#admin-main">Skip to content</a>{inactivity.state==='warning'&&<div className="ae-inactivity-warning" role="alertdialog" aria-modal="true" aria-labelledby="inactivity-title"><div className="ae-inactivity-warning-panel"><h2 id="inactivity-title">Session timeout warning</h2><p>You'll be signed out in 1 minute due to inactivity. Save your changes or stay signed in.</p><div className="flex gap-3 mt-4"><button className="gold-button" onClick={inactivity.staySignedIn}>Stay signed in</button><button className="outline-button" onClick={inactivity.manualLogout}>Sign out now</button></div></div></div>}<aside ref={navRef} className={`ae-sidebar ${nav?'ae-sidebar-open':''}`} role={nav?'dialog':undefined} aria-modal={nav||undefined} aria-label="Admin navigation">
  <div className="ae-sidebar-brand"><span className="ae-monogram">AE</span><strong>Abuja Elite</strong><button className="ae-icon-button md:hidden ml-auto" onClick={()=>setNav(false)} aria-label="Close menu"><X/></button></div>
  <nav className="ae-nav-scroll mt-8" aria-label="Editorial sections">{Object.entries({overview:'Overview',...resources,...inboxes}).map(([id,label])=><button key={id} className={`ae-nav-item ${section===id?'ae-nav-item-active':''}`} aria-current={section===id?'page':undefined} onClick={()=>choose(id as Section)}>{label}</button>)}</nav>
  <div className="mt-auto pt-5"><p className="text-xs break-all mb-3">{auth.user?.email}</p><button className="ae-signout" onClick={logout} disabled={busy}><LogOut size={16}/> Sign out</button></div></aside>{nav&&<div className="ae-sidebar-overlay md:hidden" onClick={()=>setNav(false)}/>}
- <div className="ae-main"><header className="ae-topbar"><button className="ae-icon-button md:hidden" onClick={()=>setNav(true)} aria-label="Open menu" aria-expanded={nav}><Menu/></button><span>{section==='overview'?'Overview':({...resources,...inboxes})[section]}</span><Link href="/" className="ae-icon-button ml-auto" aria-label="View public website"><ExternalLink size={18}/></Link></header>
+ <div className="ae-main"><header className="ae-topbar"><button className="ae-icon-button md:hidden" onClick={()=>setNav(true)} aria-label="Open menu" aria-expanded={nav}><Menu/></button><span>{section==='overview'?'Overview':({...resources,...inboxes})[section]}</span><div className="ae-topbar-tools"><ThemeToggle/><Link href="/" className="ae-icon-button" aria-label="View public website"><ExternalLink size={18}/></Link></div></header>
  <main className="ae-content" id="admin-main">{message&&<p className="ae-error-row" role="alert">{message}<button className="ml-auto" onClick={()=>setMessage('')} aria-label="Dismiss"><X size={16}/></button></p>}
  {section==='overview'?<><p className="ae-kicker">Your city. Your stories.</p><h1 className="ae-page-title mt-3">Keep the signal clear.</h1><p className="body-copy mt-5 mb-8">Build a living record of Abuja. Publish only approved people, images and stories.</p>{counts.isError?<p className="ae-error-row" role="alert">Counts could not load. <button onClick={()=>counts.refetch()}>Retry</button></p>:<div className="ae-overview-grid">{[['members','Members','members'],['collaborations','Collaborations','collaborations'],['events','Experiences','events'],['stories','Stories','stories'],['gallery_items','Gallery images','gallery_items'],['new_applications','New applications','applications'],['new_contact_messages','New messages','contact_messages'],['event_interests','Event interest','event_interests'],['subscribed_newsletters','Subscribers','newsletter_subscribers']].map(([key,label,target])=><button className="ae-metric text-left" key={key} onClick={()=>choose(target as Section)}><span className="ae-kicker">{label}</span><strong className="ae-count">{counts.isPending?'—':counts.data?.[key as keyof typeof counts.data]}</strong><span className="text-xs">Open section <ArrowRight size={12} className="inline"/></span></button>)}</div>}<div className="ae-empty mt-8"><h2>Ready for the next chapter.</h2><p>Add content as a draft, upload approved photography, then publish when it is ready. Dates use Abuja time.</p><button className="gold-button mt-5" onClick={()=>choose('members')}>Manage members</button></div></>:
  <><div className="ae-section-heading"><div><p className="ae-kicker">Editorial workspace</p><h1 className="ae-page-title mt-3">{({...resources,...inboxes})[section]}</h1></div>{isContent&&<button className="gold-button" onClick={()=>setEditor({resource:section as ContentResource})}><Plus size={15}/> Add record</button>}</div>
