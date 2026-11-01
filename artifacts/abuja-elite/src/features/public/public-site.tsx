@@ -11,12 +11,13 @@ import './public.css';
 import './premium.css';
 import {ThemeToggle} from '@/components/theme-toggle';
 import {Reveal} from '@/components/reveal';
+import {useMemberSession} from '@/hooks/use-member';
 const navLinks=[['About','/about'],['Community','/members'],['Experiences','/experiences'],['Collaborations','/collaborations'],['Stories','/stories'],['Gallery','/gallery']] as const;
 export function Metadata({title,description,noindex=false}:{title:string;description:string;noindex?:boolean}){
  const[location]=useLocation();useEffect(()=>{document.title=title==='Abuja Elite'?title:`${title} | Abuja Elite`;const set=(key:string,value:string,property=false)=>{let el=document.head.querySelector<HTMLMetaElement>(`meta[${property?'property':'name'}="${key}"]`);if(!el){el=document.createElement('meta');el.setAttribute(property?'property':'name',key);document.head.append(el);}el.content=value;};set('description',description);set('robots',noindex?'noindex, nofollow':'index, follow');set('og:title',document.title,true);set('og:description',description,true);set('twitter:title',document.title);set('twitter:description',description);const origin=import.meta.env.VITE_SITE_URL;let canonical=document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');if(origin){if(!canonical){canonical=document.createElement('link');canonical.rel='canonical';document.head.append(canonical);}canonical.href=origin.replace(/\/$/,'')+location;}else canonical?.remove();},[title,description,noindex,location]);return null;
 }
 export function PublicNav(){
-  const[open,setOpen]=useState(false),[location]=useLocation();
+  const[open,setOpen]=useState(false),[location]=useLocation(),member=useMemberSession();
   const button=useRef<HTMLButtonElement>(null);
   useEffect(()=>{setOpen(false);window.scrollTo({top:0,behavior:'instant'});},[location]);
   useEffect(()=>{
@@ -26,7 +27,7 @@ export function PublicNav(){
     return()=>window.removeEventListener('keydown',close);
   },[open]);
   useEffect(()=>{
-    const handleResize=()=>{if(window.innerWidth>=1024)setOpen(false);};
+    const handleResize=()=>{if(window.innerWidth>=1120)setOpen(false);};
     window.addEventListener('resize',handleResize);
     return()=>window.removeEventListener('resize',handleResize);
   },[open]);
@@ -46,11 +47,13 @@ export function PublicNav(){
           <span>ABUJA ELITE</span>
         </Link>
         <nav className="public-header-nav" aria-label="Main navigation">
-          {navLinks.map(([label,path])=><Link key={path} href={path} className="nav-link" aria-current={location===path?'page':undefined}>{label}</Link>)}
+          {[...navLinks,['Connect','/connect'] as const].map(([label,path])=><Link key={path} href={path} className="nav-link" aria-current={location===path?'page':undefined}>{label}</Link>)}
         </nav>
         <div className="public-header-actions">
           <ThemeToggle/>
-          <Link className="gold-button public-header-cta" href="/connect">Connect <ArrowUpRight size={14}/></Link>
+          {member.user
+            ? <Link className="gold-button public-header-cta" href="/account">My account</Link>
+            : <><Link className="outline-button public-header-login" href="/login">Log in</Link><Link className="gold-button public-header-cta" href="/join">Join <ArrowUpRight size={14}/></Link></>}
         </div>
       </div>
     </header>
@@ -63,13 +66,13 @@ export function PublicNav(){
           </button>
         </div>
         <div className="public-drawer-links">
-          {[...navLinks,['Connect','/connect'] as const].map(([label,path])=><Link href={path} key={path} onClick={()=>setOpen(false)} className="public-drawer-link">{label}</Link>)}
+          {[...navLinks,['Connect','/connect'] as const,...(member.user?[['My account','/account'] as const]:[['Join','/join'] as const,['Log in','/login'] as const])].map(([label,path])=><Link href={path} key={path} onClick={()=>setOpen(false)} className="public-drawer-link">{label}</Link>)}
         </div>
       </nav>
     </>}
   </>;
 }
-export function PublicFooter(){const{data}=useSettings();const instagram=safeExternalUrl(data?.instagram_url)||'https://www.instagram.com/the.elite_ng';return <footer className="public-footer elite-shell"><div><img src={logo} alt="The Elite logo" width="60" height="60"/><p>{data?.footer_text||'Living life at the top, where I belong.'}</p></div><nav aria-label="Footer"><Link href="/connect">Connect</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><a href={instagram} target="_blank" rel="noopener noreferrer">Instagram <Instagram size={14}/></a><Link href="/admin/login">Editorial desk</Link></nav><small> {new Date().getFullYear()} Abuja Elite · Abuja, Nigeria</small></footer>;}
+export function PublicFooter(){const{data}=useSettings();const instagram=safeExternalUrl(data?.instagram_url)||'https://www.instagram.com/the.elite_ng';return <footer className="public-footer elite-shell"><div><img src={logo} alt="The Elite logo" width="60" height="60"/><p>{data?.footer_text||'Living life at the top, where I belong.'}</p></div><nav aria-label="Footer"><Link href="/connect">Connect</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><a href={instagram} target="_blank" rel="noopener noreferrer">Instagram <Instagram size={14}/></a><Link href="/login">Member login</Link><Link href="/admin/login">Editorial desk</Link></nav><small> {new Date().getFullYear()} Abuja Elite · Abuja, Nigeria</small></footer>;}
 export function PublicShell({children,title,description}:{children:ReactNode;title:string;description:string}){return <div className="elite-page noise"><Metadata title={title} description={description}/><a className="skip-link" href="#main-content">Skip to content</a><PublicNav/><main id="main-content" className="public-main">{children}</main><PublicFooter/></div>;}
 export function PublicImage({resource,record,large=false}:{resource:PublicResource;record:PublicRecord;large?:boolean}){const path=imagePath(record),origin=import.meta.env.VITE_SUPABASE_URL;const src=path&&origin?`${origin}/functions/v1/public-media?resource=${resource}&id=${record.id}&v=${encodeURIComponent(path)}`:undefined;const[broken,setBroken]=useState(false);useEffect(()=>setBroken(false),[src]);const initials=resource==='members'&&record.name?record.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase():null;return <div className={`public-image ${resource==='members'?'portrait':''} ${large?'large':''}`}>{src&&!broken?<img src={src} alt={record.alt_text||record.name||record.title||'Abuja Elite photograph'} loading={large?'eager':'lazy'} decoding="async" onError={()=>setBroken(true)}/>:initials?<div className="member-initials" aria-label={path?'Image unavailable':'No photograph published'}>{initials}</div>:<div className="image-empty" aria-label={path?'Image unavailable':'No photograph published'}>{resource==='members'?<Users size={32}/>:<ImageIcon size={32}/>}</div>}</div>;}
 export function ContentCard({resource,record,onImage}:{resource:PublicResource;record:PublicRecord;onImage?:()=>void}){if(resource==='gallery_items')return <button className="public-card gallery-card" onClick={onImage}><PublicImage resource={resource} record={record}/><span>{record.caption||record.alt_text}</span><small>View photograph</small></button>;return <article className={`public-card ${resource==='members'?'member-card':''}`}><Link href={`${resourceInfo[resource].route}/${record.slug}`}><PublicImage resource={resource} record={record}/><div className="public-card-body"><p className="eyebrow">{record.category||record.role|| (resource==='events'?record.status==='cancelled'?'Cancelled':record.starts_at&&Date.parse(record.starts_at)<Date.now()?'Past experience':'Upcoming experience':resource==='stories'?'The journal':'Abuja Elite')}</p><h3>{record.name||record.title}</h3>{record.starts_at&&<p className="event-date">{dateLabel(record.starts_at)} WAT</p>}<p>{(record.bio||record.excerpt||record.description||'').slice(0,180)}</p><span className="card-link">{resource==='members'?'Meet the member':'Explore'} <ArrowUpRight size={14}/></span></div></Link></article>;}

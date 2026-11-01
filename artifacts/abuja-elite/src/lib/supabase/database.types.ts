@@ -368,10 +368,134 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["site_settings"]["Insert"]>;
         Relationships: [];
       };
+      profiles: {
+        Row: {
+          user_id: string;
+          full_name: string;
+          email: string;
+          phone: string | null;
+          whatsapp: string | null;
+          photo_path: string | null;
+          business_name: string | null;
+          profession: string | null;
+          industry: string | null;
+          location: string | null;
+          bio: string | null;
+          skills: string[];
+          linkedin_url: string | null;
+          instagram_url: string | null;
+          website_url: string | null;
+          show_email: boolean;
+          show_phone: boolean;
+          show_whatsapp: boolean;
+          listed: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: never;
+        Update: {
+          full_name?: string;
+          phone?: string | null;
+          whatsapp?: string | null;
+          photo_path?: string | null;
+          business_name?: string | null;
+          profession?: string | null;
+          industry?: string | null;
+          location?: string | null;
+          bio?: string | null;
+          skills?: string[];
+          linkedin_url?: string | null;
+          instagram_url?: string | null;
+          website_url?: string | null;
+          show_email?: boolean;
+          show_phone?: boolean;
+          show_whatsapp?: boolean;
+          listed?: boolean;
+        };
+        Relationships: [];
+      };
+      memberships: {
+        Row: {
+          user_id: string;
+          access_expires_at: string | null;
+          last_approved_at: string | null;
+          suspended: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      payment_settings: {
+        Row: {
+          id: number;
+          monthly_fee_amount: number;
+          currency: string;
+          bank_name: string | null;
+          account_name: string | null;
+          account_number: string | null;
+          payment_instructions: string | null;
+          updated_by: string | null;
+          updated_at: string;
+        };
+        Insert: never;
+        Update: {
+          monthly_fee_amount?: number;
+          currency?: string;
+          bank_name?: string | null;
+          account_name?: string | null;
+          account_number?: string | null;
+          payment_instructions?: string | null;
+        };
+        Relationships: [];
+      };
+      payment_submissions: {
+        Row: {
+          id: string;
+          user_id: string;
+          receipt_path: string;
+          member_note: string | null;
+          fee_amount: number;
+          currency: string;
+          status: "pending" | "approved" | "rejected";
+          admin_comment: string | null;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          period_start: string | null;
+          period_end: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          kind: string;
+          title: string;
+          body: string | null;
+          link: string | null;
+          read_at: string | null;
+          created_at: string;
+        };
+        Insert: never;
+        Update: { read_at?: string | null };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
       submit_public_enquiry: {Args: {p_kind: string; p_payload: Json; p_rate_key: string}; Returns: Json};
+      get_my_membership: {Args: Record<string, never>; Returns: Json};
+      submit_payment: {Args: {p_receipt_path: string; p_note?: string | null}; Returns: string};
+      admin_approve_payment: {Args: {p_submission_id: string}; Returns: Json};
+      admin_reject_payment: {Args: {p_submission_id: string; p_comment: string}; Returns: Json};
+      admin_set_suspended: {Args: {p_user_id: string; p_suspended: boolean}; Returns: Json};
+      admin_membership_summary: {Args: Record<string, never>; Returns: Json};
       is_current_user_admin: {
         Args: Record<string, never>;
         Returns: boolean;

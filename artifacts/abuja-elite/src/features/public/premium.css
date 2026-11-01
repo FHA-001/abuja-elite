@@ -168,7 +168,8 @@ html.theme-anim .elite-page * {
   -webkit-backdrop-filter: blur(22px) saturate(1.5);
   box-shadow: var(--glass-shadow);
 }
-.elite-page .public-main { padding-top: 88px; animation: pageIn 0.8s var(--ease-out) both; }
+/* No fill-mode on purpose: a leftover transform would trap fixed overlays (lightbox) inside the page box. */
+.elite-page .public-main { padding-top: 88px; animation: pageIn 0.8s var(--ease-out); }
 .elite-page .public-brand {
   font: 700 0.78rem/1 var(--app-font-sans);
   letter-spacing: 0.2em;
@@ -200,10 +201,21 @@ html.theme-anim .elite-page * {
   border-color: var(--glass-border);
   background: var(--glass);
 }
-@media (min-width: 1024px) {
+@media (min-width: 1120px) {
   .elite-page .elite-nav .public-header-hamburger { display: none; }
 }
-.elite-page .elite-nav .public-header-cta { min-height: 46px; padding: 0.75rem 1.3rem; }
+@media (max-width: 1119px) {
+  .elite-page .elite-nav .public-header-nav { display: none; }
+  .elite-page .elite-nav .public-header-hamburger { display: inline-flex; }
+}
+.elite-page .elite-nav .public-header-login { display: none; min-height: 46px; padding: 0.75rem 1.2rem; }
+@media (min-width: 1180px) {
+  .elite-page .elite-nav .public-header-login { display: inline-flex; }
+}
+.elite-page .elite-nav .public-header-cta { display: none; min-height: 46px; padding: 0.75rem 1.3rem; }
+@media (min-width: 640px) {
+  .elite-page .elite-nav .public-header-cta { display: inline-flex; }
+}
 
 /* Theme toggle */
 .theme-toggle {

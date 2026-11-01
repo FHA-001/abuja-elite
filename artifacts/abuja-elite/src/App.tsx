@@ -11,6 +11,11 @@ import {useSettings,type PublicResource} from '@/features/public/data';
 import logoPath from '@assets/image_1787638883470.png';
 const AdminWorkspace=lazy(()=>import('@/features/admin/admin-workspace'));
 const ResetPassword=lazy(()=>import('@/features/admin/reset-password'));
+const JoinPage=lazy(()=>import('@/features/member/auth-pages').then(m=>({default:m.JoinPage})));
+const LoginPage=lazy(()=>import('@/features/member/auth-pages').then(m=>({default:m.LoginPage})));
+const ForgotPasswordPage=lazy(()=>import('@/features/member/auth-pages').then(m=>({default:m.ForgotPasswordPage})));
+const ResetMemberPasswordPage=lazy(()=>import('@/features/member/auth-pages').then(m=>({default:m.ResetMemberPasswordPage})));
+const AccountPage=lazy(()=>import('@/features/member/account-page'));
 const queryClient=new QueryClient({defaultOptions:{queries:{retry:1,refetchOnWindowFocus:true}}});
 function Marquee() {
   const items = ['Abuja / Nigeria', 'The good life, considered', 'Ambition with a point of view', 'Make room at the table'];
@@ -75,7 +80,7 @@ function Home(){const{data:settings}=useSettings();return <div className="elite-
 function RoutedErrorBoundary({children}:{children:ReactNode}){const[location]=useLocation();return <ErrorBoundary resetKey={location}>{children}</ErrorBoundary>;}
 function Admin({loginOnly=false}:{loginOnly?:boolean}){return <><Metadata title="Editorial desk" description="Abuja Elite administration." noindex/><AdminWorkspace loginOnly={loginOnly}/></>;}
 function App(){return <QueryClientProvider client={queryClient}><WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/,'')}><RoutedErrorBoundary><Suspense fallback={<div className="public-empty" role="status">Opening the page…</div>}><Switch>
-<Route path="/" component={Home}/><Route path="/admin/reset-password" component={ResetPassword}/><Route path="/admin/login"><Admin loginOnly/></Route><Route path="/admin"><Admin/></Route><Route path="/about" component={AboutPage}/><Route path="/connect" component={ConnectPage}/><Route path="/privacy"><InformationPage/></Route><Route path="/terms"><InformationPage terms/></Route>
+<Route path="/" component={Home}/><Route path="/admin/reset-password" component={ResetPassword}/><Route path="/join" component={JoinPage}/><Route path="/login" component={LoginPage}/><Route path="/forgot-password" component={ForgotPasswordPage}/><Route path="/reset-password" component={ResetMemberPasswordPage}/><Route path="/account" component={AccountPage}/><Route path="/admin/login"><Admin loginOnly/></Route><Route path="/admin"><Admin/></Route><Route path="/about" component={AboutPage}/><Route path="/connect" component={ConnectPage}/><Route path="/privacy"><InformationPage/></Route><Route path="/terms"><InformationPage terms/></Route>
 {([['members','members'],['community','members'],['collaborations','collaborations'],['experiences','events'],['stories','stories'],['journey','stories']] as const).flatMap(([route,resource])=>[<Route key={route+'detail'} path={'/'+route+'/:slug'}>{params=><DetailPage resource={resource} slug={String((params as Record<string,unknown>).slug)}/>}</Route>,<Route key={route} path={'/'+route}><CollectionPage key={resource} resource={resource}/></Route>])}
 <Route path="/gallery"><CollectionPage resource="gallery_items"/></Route><Route><PublicShell title="Page not found" description="Return to the Abuja Elite website."><Metadata title="Page not found" description="This page is not available." noindex/><div className="elite-shell collection-head notfound"><p className="notfound-code" aria-hidden="true">404</p><p className="eyebrow">Page not found</p><h1 className="display-font">A different direction.</h1><p className="body-copy mt-6">That page could not be found.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/" className="gold-button">Back to Abuja Elite</Link><Link href="/members" className="outline-button">Meet the community</Link></div></div></PublicShell></Route>
 </Switch></Suspense></RoutedErrorBoundary></WouterRouter></QueryClientProvider>;}
