@@ -1,9 +1,8 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useLocation } from "wouter";
-import { useQueryClient } from "@tanstack/react-query";
 import { getSupabaseClient, supabaseConfig } from "@/lib/supabase/client";
 import { requestPasswordReset, signInMember, signUpMember } from "@/lib/supabase/membership";
-import { useMemberSession } from "@/hooks/use-member";
+import { useMemberSession, useMembership } from "@/hooks/use-member";
 import { MemberShell } from "./member-shell";
 
 const MIN_PASSWORD = 10;
@@ -145,17 +144,21 @@ export function JoinPage() {
 export function LoginPage() {
   const [, navigate] = useLocation();
   const session = useMemberSession();
-  const queryClient = useQueryClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const next = safeNext(new URLSearchParams(window.location.search).get("next"));
+  const membership = useMembership(session.user?.id);
 
+  // One login form for everyone: once we know who signed in, send admins to the admin desk
+  // and members to their account (or to the page they were trying to reach).
   useEffect(() => {
-    if (session.user) navigate(next, { replace: true });
-  }, [session.user, next, navigate]);
+    if (!session.user || membership.isPending) return;
+    const isAdmin = membership.data?.isAdmin === true;
+    navigate(isAdmin && next === "/account" ? "/admin" : next, { replace: true });
+  }, [session.user, membership.isPending, membership.data, next, navigate]);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -164,8 +167,8 @@ export function LoginPage() {
     setError("");
     try {
       await signInMember(email, password);
-      await queryClient.invalidateQueries();
-      navigate(next, { replace: true });
+      // No redirect here on purpose: the effect above sends admins and members to the right place
+      // once it knows who signed in.
     } catch (err) {
       setError(err instanceof Error ? err.message : "We could not log you in.");
     } finally {
@@ -179,7 +182,9 @@ export function LoginPage() {
         <div className="member-auth member-card">
           <p className="eyebrow">Members</p>
           <h1 className="display-font">Welcome back.</h1>
-          {!supabaseConfig.isConfigured ? <Unavailable /> : (
+          {!supabaseConfig.isConfigured ? <Unavailable /> : session.user ? (
+            <p role="status" className="member-hint">Signing you in…</p>
+          ) : (
             <>
               <form className="public-form member-form" onSubmit={onSubmit} aria-label="Log in">
                 <label>

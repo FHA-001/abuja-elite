@@ -1,13 +1,15 @@
 import {ArrowDownRight,ArrowUpRight} from 'lucide-react';
 import {lazy,Suspense,type ReactNode} from 'react';
 import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
-import {Route,Switch,Link,useLocation,Router as WouterRouter} from 'wouter';
+import {Route,Switch,Link,Redirect,useLocation,Router as WouterRouter} from 'wouter';
 import {ErrorBoundary} from '@/components/error-boundary';
 import {SectionHeading} from '@/components/section-heading';
 import {Reveal} from '@/components/reveal';
+import {MembershipGate} from '@/features/member/membership-gate';
 import {PublicNav,PublicFooter,Metadata,FeaturedCollection,CollectionPage,DetailPage,AboutPage,ConnectPage,InformationPage,PublicShell} from '@/features/public/public-site';
 import {ConnectForm} from '@/features/public/submission-form';
 import {useSettings,type PublicResource} from '@/features/public/data';
+import {useMemberAccess} from '@/hooks/use-member';
 import logoPath from '@assets/image_1787638883470.png';
 const AdminWorkspace=lazy(()=>import('@/features/admin/admin-workspace'));
 const ResetPassword=lazy(()=>import('@/features/admin/reset-password'));
@@ -16,6 +18,8 @@ const LoginPage=lazy(()=>import('@/features/member/auth-pages').then(m=>({defaul
 const ForgotPasswordPage=lazy(()=>import('@/features/member/auth-pages').then(m=>({default:m.ForgotPasswordPage})));
 const ResetMemberPasswordPage=lazy(()=>import('@/features/member/auth-pages').then(m=>({default:m.ResetMemberPasswordPage})));
 const AccountPage=lazy(()=>import('@/features/member/account-page'));
+const ProfilePage=lazy(()=>import('@/features/member/profile-page'));
+const DirectoryPage=lazy(()=>import('@/features/member/directory-page'));
 const queryClient=new QueryClient({defaultOptions:{queries:{retry:1,refetchOnWindowFocus:true}}});
 function Marquee() {
   const items = ['Abuja / Nigeria', 'The good life, considered', 'Ambition with a point of view', 'Make room at the table'];
@@ -30,7 +34,7 @@ function Marquee() {
   );
 }
 
-function Home(){const{data:settings}=useSettings();return <div className="elite-page noise min-h-[100dvh]"><Metadata title="Abuja Elite" description="People, stories and shared experiences shaping Abuja. Discover the Abuja Elite community."/><a className="skip-link" href="#main-content">Skip to content</a><PublicNav/><main id="main-content">        <section id="home" className="hero">
+function Home(){const{data:settings}=useSettings();const access=useMemberAccess();const SECTIONS=[['community','The people','Room for your next chapter.','members','section-light-cards'],['experiences','The calendar','Go where the energy is.','events','section-dark-intro-light-content'],['collaborations','In good company','Better together.','collaborations','section-parchment'],['journey','The journey','A story still being written.','stories','section-light-intro-dark-content'],['gallery','Visual archive','The moments between.','gallery_items','section-gallery-light-head']] as const;const shown=SECTIONS.filter(row=>row[3]==='gallery_items'||access.hasAccess);const total=shown.length+2;const num=(n:number)=>`${String(n).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;return <div className="elite-page noise min-h-[100dvh]"><Metadata title="Abuja Elite" description="People, stories and shared experiences shaping Abuja. Discover the Abuja Elite community."/><a className="skip-link" href="#main-content">Skip to content</a><PublicNav/><main id="main-content">        <section id="home" className="hero">
           <div className="hero-grid" aria-hidden="true" />
           <div className="hero-glow" aria-hidden="true" />
           <div className="hero-orbit" aria-hidden="true" />
@@ -60,7 +64,7 @@ function Home(){const{data:settings}=useSettings();return <div className="elite-
 
         <section id="about" className="section light-section">
           <div className="elite-shell">
-            <Reveal><SectionHeading index="01 / 07" kicker="The point of view" title="Not a club. A signal." detail="A place to find the people, perspectives and possibilities that make Abuja feel like home." /></Reveal>
+            <Reveal><SectionHeading index={num(1)} kicker="The point of view" title="Not a club. A signal." detail="A place to find the people, perspectives and possibilities that make Abuja feel like home." /></Reveal>
             <Reveal delay={0.1}><div className="grid gap-12 md:grid-cols-[1.1fr_.9fr] md:gap-24">
               <div>
                 <p className="manifesto display-font">The city is not waiting to be discovered.</p>
@@ -68,20 +72,23 @@ function Home(){const{data:settings}=useSettings();return <div className="elite-
               </div>
               <div className="md:pt-2">
                 <p className="body-copy">We are building a public platform for a private feeling: the spark that happens when ambitious people gather with generosity, taste and intent. Abuja Elite is editorial, social and always in conversation with the city.</p>
-                <a href="#community" className="focus-ring mt-9 inline-flex items-center gap-3 border-b border-[hsl(var(--primary))] pb-2 font-mono text-[.67rem] uppercase tracking-[.14em] text-[color:hsl(var(--foreground))]" data-testid="link-about-community">Meet the community <ArrowUpRight size={14} /></a>
+                {access.hasAccess
+                  ? <a href="#community" className="focus-ring mt-9 inline-flex items-center gap-3 border-b border-[hsl(var(--primary))] pb-2 font-mono text-[.67rem] uppercase tracking-[.14em] text-[color:hsl(var(--foreground))]" data-testid="link-about-community">Meet the community <ArrowUpRight size={14} /></a>
+                  : <Link href="/join" className="focus-ring mt-9 inline-flex items-center gap-3 border-b border-[hsl(var(--primary))] pb-2 font-mono text-[.67rem] uppercase tracking-[.14em] text-[color:hsl(var(--foreground))]" data-testid="link-about-community">Join the community <ArrowUpRight size={14} /></Link>}
               </div>
             </div></Reveal>
           </div>
         </section>
 
 
-{([['community','02 / 07','The people','Room for your next chapter.','members','section-light-cards'],['experiences','03 / 07','The calendar','Go where the energy is.','events','section-dark-intro-light-content'],['collaborations','04 / 07','In good company','Better together.','collaborations','section-parchment'],['journey','05 / 07','The journey','A story still being written.','stories','section-light-intro-dark-content'],['gallery','06 / 07','Visual archive','The moments between.','gallery_items','section-gallery-light-head']] as const).map(([id,index,kicker,title,resource,themeClass])=><section id={id} className={`section ${themeClass}`} key={id}><div className="elite-shell"><Reveal><SectionHeading index={index} kicker={kicker} title={title}/></Reveal><FeaturedCollection resource={resource}/></div></section>)}
-<section id="connect" className="section light-section no-noise"><div className="elite-shell"><div className="connect-box connect-layout p-7 sm:p-12"><div><p className="eyebrow">07 / 07 — Connect</p><h2 className="section-title display-font mt-5">Leave the door open.</h2><p className="body-copy mt-7">For membership enquiries, event interest, collaboration ideas or a note from the city — this is the place.</p><p className="mt-7">Abuja, Nigeria</p><a href="https://www.instagram.com/the.elite_ng" target="_blank" rel="noopener noreferrer" className="public-more">@the.elite_ng ↗</a></div><ConnectForm/></div></div></section></main><PublicFooter/></div>;}
+{shown.map(([id,kicker,title,resource,themeClass],i)=><section id={id} className={`section ${themeClass}`} key={id}><div className="elite-shell"><Reveal><SectionHeading index={num(i+2)} kicker={kicker} title={title}/></Reveal><FeaturedCollection resource={resource}/></div></section>)}
+<section id="connect" className="section light-section no-noise"><div className="elite-shell"><div className="connect-box connect-layout p-7 sm:p-12"><div><p className="eyebrow">{num(total)} — Connect</p><h2 className="section-title display-font mt-5">Leave the door open.</h2><p className="body-copy mt-7">For membership enquiries, event interest, collaboration ideas or a note from the city — this is the place.</p><p className="mt-7">Abuja, Nigeria</p><a href="https://www.instagram.com/the.elite_ng" target="_blank" rel="noopener noreferrer" className="public-more">@the.elite_ng ↗</a></div><ConnectForm/></div></div></section></main><PublicFooter/></div>;}
 function RoutedErrorBoundary({children}:{children:ReactNode}){const[location]=useLocation();return <ErrorBoundary resetKey={location}>{children}</ErrorBoundary>;}
 function Admin({loginOnly=false}:{loginOnly?:boolean}){return <><Metadata title="Editorial desk" description="Abuja Elite administration." noindex/><AdminWorkspace loginOnly={loginOnly}/></>;}
 function App(){return <QueryClientProvider client={queryClient}><WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/,'')}><RoutedErrorBoundary><Suspense fallback={<div className="public-empty" role="status">Opening the page…</div>}><Switch>
-<Route path="/" component={Home}/><Route path="/admin/reset-password" component={ResetPassword}/><Route path="/join" component={JoinPage}/><Route path="/login" component={LoginPage}/><Route path="/forgot-password" component={ForgotPasswordPage}/><Route path="/reset-password" component={ResetMemberPasswordPage}/><Route path="/account" component={AccountPage}/><Route path="/admin/login"><Admin loginOnly/></Route><Route path="/admin"><Admin/></Route><Route path="/about" component={AboutPage}/><Route path="/connect" component={ConnectPage}/><Route path="/privacy"><InformationPage/></Route><Route path="/terms"><InformationPage terms/></Route>
-{([['members','members'],['community','members'],['collaborations','collaborations'],['experiences','events'],['stories','stories'],['journey','stories']] as const).flatMap(([route,resource])=>[<Route key={route+'detail'} path={'/'+route+'/:slug'}>{params=><DetailPage resource={resource} slug={String((params as Record<string,unknown>).slug)}/>}</Route>,<Route key={route} path={'/'+route}><CollectionPage key={resource} resource={resource}/></Route>])}
+<Route path="/" component={Home}/><Route path="/admin/reset-password" component={ResetPassword}/><Route path="/join" component={JoinPage}/><Route path="/login" component={LoginPage}/><Route path="/forgot-password" component={ForgotPasswordPage}/><Route path="/reset-password" component={ResetMemberPasswordPage}/><Route path="/account/profile" component={ProfilePage}/><Route path="/account" component={AccountPage}/><Route path="/directory"><Redirect to="/members"/></Route><Route path="/admin/login"><Admin loginOnly/></Route><Route path="/admin"><Admin/></Route><Route path="/about" component={AboutPage}/><Route path="/connect" component={ConnectPage}/><Route path="/privacy"><InformationPage/></Route><Route path="/terms"><InformationPage terms/></Route>
+<Route path="/members"><MembershipGate resource="members"><DirectoryPage/></MembershipGate></Route><Route path="/community"><MembershipGate resource="members"><DirectoryPage/></MembershipGate></Route>
+{([['members','members'],['community','members'],['collaborations','collaborations'],['experiences','events'],['stories','stories'],['journey','stories']] as const).flatMap(([route,resource])=>[<Route key={route+'detail'} path={'/'+route+'/:slug'}>{params=><MembershipGate resource={resource}><DetailPage resource={resource} slug={String((params as Record<string,unknown>).slug)}/></MembershipGate>}</Route>,<Route key={route} path={'/'+route}><MembershipGate resource={resource}><CollectionPage key={resource} resource={resource}/></MembershipGate></Route>])}
 <Route path="/gallery"><CollectionPage resource="gallery_items"/></Route><Route><PublicShell title="Page not found" description="Return to the Abuja Elite website."><Metadata title="Page not found" description="This page is not available." noindex/><div className="elite-shell collection-head notfound"><p className="notfound-code" aria-hidden="true">404</p><p className="eyebrow">Page not found</p><h1 className="display-font">A different direction.</h1><p className="body-copy mt-6">That page could not be found.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/" className="gold-button">Back to Abuja Elite</Link><Link href="/members" className="outline-button">Meet the community</Link></div></div></PublicShell></Route>
 </Switch></Suspense></RoutedErrorBoundary></WouterRouter></QueryClientProvider>;}
 export default App;

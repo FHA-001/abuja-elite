@@ -471,6 +471,33 @@ export type Database = {
         Update: never;
         Relationships: [];
       };
+      announcements: {
+        Row: {
+          id: string;
+          title: string;
+          body: string;
+          pinned: boolean;
+          published: boolean;
+          published_at: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          title: string;
+          body: string;
+          pinned?: boolean;
+          published?: boolean;
+          published_at?: string;
+        };
+        Update: {
+          title?: string;
+          body?: string;
+          pinned?: boolean;
+          published?: boolean;
+          published_at?: string;
+        };
+        Relationships: [];
+      };
       notifications: {
         Row: {
           id: string;
@@ -494,6 +521,10 @@ export type Database = {
       submit_payment: {Args: {p_receipt_path: string; p_note?: string | null}; Returns: string};
       admin_approve_payment: {Args: {p_submission_id: string}; Returns: Json};
       admin_reject_payment: {Args: {p_submission_id: string; p_comment: string}; Returns: Json};
+      recent_members: {Args: {p_limit?: number}; Returns: Json};
+      search_directory: {Args: {p_query?: string | null; p_industry?: string | null; p_location?: string | null; p_skill?: string | null; p_limit?: number; p_offset?: number}; Returns: Json};
+      directory_filters: {Args: Record<string, never>; Returns: Json};
+      get_teasers: {Args: {p_kind: string; p_limit?: number}; Returns: Json};
       admin_set_suspended: {Args: {p_user_id: string; p_suspended: boolean}; Returns: Json};
       admin_membership_summary: {Args: Record<string, never>; Returns: Json};
       is_current_user_admin: {

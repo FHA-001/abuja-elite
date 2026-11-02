@@ -8,8 +8,10 @@ import {
   type MyMembership, type MyPayment, type PaymentSettings,
 } from "@/lib/supabase/membership";
 import { useMemberSession, useMembership } from "@/hooks/use-member";
+import { getMyProfile } from "@/lib/supabase/directory";
 import { MemberShell } from "./member-shell";
 import { ReceiptForm } from "./receipt-form";
+import { MemberDashboard } from "./member-dashboard";
 
 function Badge({ tone, children }: { tone: "gold" | "green" | "red" | "muted"; children: ReactNode }) {
   return <span className={`member-badge member-badge-${tone}`}>{children}</span>;
@@ -115,6 +117,7 @@ export default function AccountPage() {
   const membership = useMembership(user?.id);
   const settings = useQuery({ queryKey: ["payment-settings"], queryFn: getPaymentSettings, enabled: Boolean(user), staleTime: 60_000 });
   const payments = useQuery({ queryKey: ["payments", user?.id], queryFn: () => listMyPayments(user!.id), enabled: Boolean(user) });
+  const myProfile = useQuery({ queryKey: ["my-profile", user?.id], queryFn: () => getMyProfile(user!.id), enabled: Boolean(user), staleTime: 60_000 });
   const profileName = useQuery({ queryKey: ["profile-name", user?.id], queryFn: () => getMyProfileName(user!.id), enabled: Boolean(user), staleTime: 300_000 });
 
   function refreshAll() {
@@ -169,6 +172,14 @@ export default function AccountPage() {
               <Badge tone={copy.tone}>{copy.badge}</Badge>
               <h2 className="display-font">{copy.title}</h2>
               <p className="body-copy">{copy.body}</p>
+              {m?.state === "active" && left !== null && left >= 0 && (
+                <div className="renew-meter" role="img" aria-label={`${left} days left in this membership month`}>
+                  <span style={{ width: `${Math.max(4, Math.min(100, (left / 31) * 100))}%` }} className={left <= 7 ? "is-low" : ""} />
+                </div>
+              )}
+              {m?.state === "active" && left !== null && left >= 0 && left <= 7 && (
+                <p className="member-hint renew-warning">Your membership ends soon. Renew below to keep your access without a break.</p>
+              )}
               {m?.state === "suspended" && <Link className="outline-button mt-5" href="/connect">Contact us</Link>}
               {m?.hasAccess && (
                 <div className="member-links" aria-label="Members-only pages">
@@ -179,6 +190,16 @@ export default function AccountPage() {
                 </div>
               )}
               {m?.isAdmin && <Link className="member-admin-link" href="/admin">Open the editorial desk →</Link>}
+            </div>
+          )}
+
+          {m?.hasAccess && <MemberDashboard userId={user.id} />}
+
+          {m?.hasAccess && myProfile.data && !myProfile.data.profession && !myProfile.data.business_name && (
+            <div className="member-card member-nudge">
+              <h2 className="display-font">Complete your profile.</h2>
+              <p className="body-copy">Add your profession or business and a photo so other members can find you on the Community page.</p>
+              <Link className="gold-button mt-4" href="/account/profile">Edit my profile</Link>
             </div>
           )}
 
@@ -236,7 +257,10 @@ export default function AccountPage() {
 
           <div className="member-account-row">
             <span className="member-hint">Signed in as {user.email}</span>
-            <button className="outline-button" onClick={logOut}>Log out</button>
+            <span className="member-account-buttons">
+              <Link className="outline-button" href="/account/profile">Edit my profile</Link>
+              <button className="outline-button" onClick={logOut}>Log out</button>
+            </span>
           </div>
         </div>
 
