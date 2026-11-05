@@ -56,6 +56,7 @@ function asNumber(value: unknown): number {
 
 export type MembershipSummary = {
   waitingReceipts: number;
+  waitingEventSignups: number;
   notPaidYet: number;
   active: number;
   expiringSoon: number;
@@ -78,6 +79,7 @@ export function useMembershipSummary(userId: string | null, enabled: boolean) {
       const d = (data ?? {}) as Record<string, unknown>;
       return {
         waitingReceipts: asNumber(d.waiting_receipts),
+        waitingEventSignups: asNumber(d.waiting_event_signups),
         notPaidYet: asNumber(d.not_paid_yet),
         active: asNumber(d.active),
         expiringSoon: asNumber(d.expiring_soon),
@@ -96,11 +98,12 @@ export function MembershipOverview({
   summary: MembershipSummary | undefined;
   loading: boolean;
   error: boolean;
-  onOpen: (section: "payments" | "accounts") => void;
+  onOpen: (section: "payments" | "accounts" | "event_signups") => void;
 }) {
   if (error) return <p className="ae-error-row" role="alert">Membership counts could not load.</p>;
-  const cards: Array<[string, string, number | undefined, "payments" | "accounts", boolean]> = [
+  const cards: Array<[string, string, number | undefined, "payments" | "accounts" | "event_signups", boolean]> = [
     ["waiting", "Receipts waiting", summary?.waitingReceipts, "payments", true],
+    ["events", "Event sign-ups waiting", summary?.waitingEventSignups, "event_signups", true],
     ["active", "Active members", summary?.active, "accounts", false],
     ["soon", "Expiring in 7 days", summary?.expiringSoon, "accounts", false],
     ["grace", "In grace period", summary?.grace, "accounts", false],
@@ -461,6 +464,7 @@ export function AccountsPanel({ userId, adminIds }: { userId: string; adminIds: 
         </div>
       </div>
       <p className="body-copy mb-6">Everyone who has signed up, and where their membership stands.</p>
+      <RemindersButton userId={userId} />
 
       <label className="ae-field mb-4">Search by name, email or business
         <input className="ae-input ae-field-input" value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -580,6 +584,35 @@ function AccountDrawer({ userId, account, onClose }: { userId: string; account: 
           )}
         </div>
       </aside>
+    </div>
+  );
+}
+
+function RemindersButton({ userId }: { userId: string }) {
+  const queryClient = useQueryClient();
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  async function run() {
+    if (busy) return;
+    if (!window.confirm("Send renewal reminders now? Members whose membership is ending or has ended get a notification in the app. Each reminder is only ever sent once.")) return;
+    setBusy(true);
+    setMessage("");
+    try {
+      const { data, error } = await getSupabaseClient().rpc("admin_run_reminders");
+      if (error) throw error;
+      const sent = Number((data as Record<string, unknown> | null)?.sent ?? 0);
+      setMessage(sent === 0 ? "Nobody needs a reminder right now." : `${sent} reminder${sent === 1 ? "" : "s"} sent.`);
+      await queryClient.invalidateQueries({ queryKey: ["admin", userId] });
+    } catch (e) {
+      setMessage(friendly(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <div className="ae-reminders">
+      <button className="outline-button" disabled={busy} onClick={run}>{busy ? "Sending…" : "Send renewal reminders now"}</button>
+      {message && <span className="ae-hint" role="status">{message}</span>}
     </div>
   );
 }

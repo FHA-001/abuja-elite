@@ -12,6 +12,7 @@ import { getMyProfile } from "@/lib/supabase/directory";
 import { MemberShell } from "./member-shell";
 import { ReceiptForm } from "./receipt-form";
 import { MemberDashboard } from "./member-dashboard";
+import { InstallApp } from "./install-app";
 
 function Badge({ tone, children }: { tone: "gold" | "green" | "red" | "muted"; children: ReactNode }) {
   return <span className={`member-badge member-badge-${tone}`}>{children}</span>;
@@ -194,6 +195,8 @@ export default function AccountPage() {
           )}
 
           {m?.hasAccess && <MemberDashboard userId={user.id} />}
+
+          <InstallApp />
 
           {m?.hasAccess && myProfile.data && !myProfile.data.profession && !myProfile.data.business_name && (
             <div className="member-card member-nudge">

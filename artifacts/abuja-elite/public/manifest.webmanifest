@@ -1,0 +1,24 @@
+{
+  "id": "/",
+  "name": "Abuja Elite",
+  "short_name": "Abuja Elite",
+  "description": "The Abuja Elite members community: events, announcements and people.",
+  "start_url": "/account",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#0f0c08",
+  "lang": "en",
+  "categories": ["social", "business", "lifestyle"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "My account", "short_name": "Account", "url": "/account" },
+    { "name": "Community", "short_name": "Community", "url": "/members" },
+    { "name": "Experiences", "short_name": "Events", "url": "/experiences" }
+  ]
+}

@@ -277,3 +277,23 @@ html[data-theme='light'] .elite-page {
 .elite-page .dash-people li a:hover { background: var(--glass); }
 .elite-page .dash-people li a > span:last-child { display: grid; min-width: 0; }
 .elite-page .dash-people small { color: var(--public-body-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- Event sign-up ---------- */
+.elite-page .event-price { color: var(--public-gold-label) !important; font-weight: 700; letter-spacing: 0.02em; }
+.elite-page .event-signup { display: grid; gap: 1rem; max-width: 640px; margin-top: 2rem; }
+.elite-page .event-signup h2 { margin: 0; font-weight: 600; font-size: 1.9rem; line-height: 1.1; }
+.elite-page .event-signup-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.elite-page .event-check { display: inline; vertical-align: -3px; color: var(--member-ok); }
+.elite-page .event-pay { margin: 0; }
+.elite-page .event-date-note { margin: 0; }
+.elite-page .event-signup .receipt-form { margin-top: 0.4rem; }
+.elite-page .dash-event-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+/* ---------- Install the app ---------- */
+.elite-page .install-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.2rem; }
+.elite-page .install-card h2 { margin: 0.5rem 0 0.7rem; }
+.elite-page .install-card .body-copy { margin: 0; max-width: 46ch; }
+.elite-page .install-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+.elite-page .install-steps { margin: 0; padding-left: 1.2rem; color: var(--public-body-text); line-height: 1.9; max-width: 46ch; }
+.elite-page .install-steps strong { color: hsl(var(--foreground)); }
+.elite-page .install-icon { display: inline; vertical-align: -3px; color: var(--public-gold-label); }

@@ -6,8 +6,12 @@ function sizeLabel(bytes: number) {
 }
 
 export function ReceiptForm({
-  userId, submitLabel, onSubmitted,
-}: { userId: string; submitLabel: string; onSubmitted: () => void }) {
+  userId, submitLabel, onSubmitted, submit,
+}: {
+  userId: string; submitLabel: string; onSubmitted: () => void;
+  /** Defaults to a membership payment. Pass your own to use the form for something else (event tickets). */
+  submit?: (file: File, note: string) => Promise<void>;
+}) {
   const [file, setFile] = useState<File | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
@@ -39,7 +43,7 @@ export function ReceiptForm({
     setBusy(true);
     setError("");
     try {
-      await submitReceipt(userId, file, note);
+      await (submit ? submit(file, note) : submitReceipt(userId, file, note));
       setFile(null);
       setNote("");
       if (input.current) input.current.value = "";

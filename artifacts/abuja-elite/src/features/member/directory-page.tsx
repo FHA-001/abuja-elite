@@ -99,8 +99,8 @@ export default function DirectoryPage() {
       </section>
 
       {!filtered && featuredRows.length > 0 && (
-        <section className="elite-shell community-featured" aria-label="Featured members">
-          <p className="eyebrow">Featured members</p>
+        <section className="elite-shell community-featured" aria-label="Featured profiles">
+          <p className="eyebrow">Featured profiles</p>
           <div className="public-grid">
             {featuredRows.map((r) => <ContentCard key={r.id} resource="members" record={r} />)}
           </div>

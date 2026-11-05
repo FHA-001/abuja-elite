@@ -459,3 +459,5 @@ html:not([data-theme='light']) .ae-admin .ae-inline-error { color: hsl(4 77% 76%
 .ae-admin .ae-field-input { width: 100%; min-height: 2.9rem; padding: 0.75rem 0.95rem; font: inherit; line-height: 1.4; }
 .ae-admin textarea.ae-field-input { min-height: 5.5rem; resize: vertical; }
 .ae-admin .ae-settings > .gold-button { justify-self: start; }
+
+.ae-admin .ae-reminders { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-bottom: 1.4rem; }

@@ -171,6 +171,7 @@ const resourceFields: Record<DashboardResource, Array<{
     { name: 'starts_at', label: 'Starts at (Abuja time)', type: 'datetime-local', required: true },
     { name: 'ends_at', label: 'Ends at (Abuja time)', type: 'datetime-local' },
     { name: 'location', label: 'Location' },
+    { name: 'price_amount', label: 'Ticket price in naira (0 = free)', type: 'number' },
     { name: 'cover_image_path', label: 'Cover image', media: true },
     { name: 'registration_url', label: 'Registration URL', type: 'url' },
     { name: 'status', label: 'Status', type: 'select', options: ['scheduled', 'cancelled'] },

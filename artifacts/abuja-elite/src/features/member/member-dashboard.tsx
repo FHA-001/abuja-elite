@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, MapPin } from "lucide-react";
-import { formatDate } from "@/lib/supabase/membership";
+import { formatDate, formatMoney, listMyRegistrations } from "@/lib/supabase/membership";
 import { listAnnouncements, listNewMembers, listOpportunities, listUpcomingEvents } from "@/lib/supabase/dashboard";
 import { MemberAvatar } from "./member-avatar";
 
@@ -30,6 +30,7 @@ export function MemberDashboard({ userId }: { userId: string }) {
   const [allNews, setAllNews] = useState(false);
   const news = useQuery({ queryKey: ["dash-announcements", userId], queryFn: listAnnouncements, staleTime: 30_000, retry: 1 });
   const events = useQuery({ queryKey: ["dash-events", userId], queryFn: listUpcomingEvents, staleTime: 60_000, retry: 1 });
+  const regs = useQuery({ queryKey: ["dash-regs", userId], queryFn: () => listMyRegistrations(userId), staleTime: 30_000, retry: 1 });
   const people = useQuery({ queryKey: ["dash-people", userId], queryFn: listNewMembers, staleTime: 60_000, retry: 1 });
   const opps = useQuery({ queryKey: ["dash-opps", userId], queryFn: listOpportunities, staleTime: 60_000, retry: 1 });
 
@@ -70,6 +71,11 @@ export function MemberDashboard({ userId }: { userId: string }) {
                 <Link href={`/experiences/${e.slug}`}>
                   <span className="dash-event-date"><CalendarDays size={16} aria-hidden="true" />{formatDate(e.starts_at, true)}</span>
                   <strong>{e.title}</strong>
+                  <span className="dash-event-tags">
+                    <span className={`member-badge ${e.price_amount > 0 ? "member-badge-gold" : "member-badge-green"}`}>{e.price_amount > 0 ? formatMoney(e.price_amount, "NGN") : "Free"}</span>
+                    {(regs.data?.[e.id] === "going" || regs.data?.[e.id] === "approved") && <span className="member-badge member-badge-green">You are going</span>}
+                    {regs.data?.[e.id] === "pending" && <span className="member-badge member-badge-gold">Payment in review</span>}
+                  </span>
                   {e.location && <span className="dir-meta"><MapPin size={13} aria-hidden="true" /> {e.location}</span>}
                 </Link>
               </li>

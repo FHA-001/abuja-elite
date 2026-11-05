@@ -3,7 +3,7 @@ import { getSupabaseClient } from "./client";
 /* Everything here is for paid members (the database enforces it). */
 
 export type Announcement = { id: string; title: string; body: string; pinned: boolean; published_at: string };
-export type DashEvent = { id: string; title: string; slug: string; starts_at: string; location: string | null };
+export type DashEvent = { id: string; title: string; slug: string; starts_at: string; location: string | null; price_amount: number };
 export type DashOpportunity = { id: string; name: string; slug: string; category: string | null };
 export type NewMember = {
   user_id: string; full_name: string; photo_path: string | null;
@@ -26,7 +26,7 @@ export async function listAnnouncements(): Promise<Announcement[]> {
 export async function listUpcomingEvents(): Promise<DashEvent[]> {
   const { data, error } = await getSupabaseClient()
     .from("events")
-    .select("id,title,slug,starts_at,location")
+    .select("id,title,slug,starts_at,location,price_amount")
     .eq("published", true)
     .eq("status", "scheduled")
     .gte("starts_at", new Date(Date.now() - 3 * 3600_000).toISOString())

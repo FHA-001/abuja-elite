@@ -107,24 +107,83 @@ function friendlyPaymentError(message: string): string {
   return "We could not submit your receipt. Please check your connection and try again.";
 }
 
-export async function submitReceipt(userId: string, file: File, note: string): Promise<void> {
+async function uploadReceiptFile(userId: string, file: File): Promise<string> {
   const problem = validateReceiptFile(file);
   if (problem) throw new Error(problem);
-
-  const client = getSupabaseClient();
   const path = `${userId}/${crypto.randomUUID()}.${RECEIPT_TYPES[file.type]}`;
-  const upload = await client.storage
-    .from("payment-receipts")
+  const upload = await getSupabaseClient()
+    .storage.from("payment-receipts")
     .upload(path, file, { contentType: file.type, cacheControl: "3600", upsert: false });
   if (upload.error) {
     throw new Error("The file could not be uploaded. Please check your connection and try again.");
   }
+  return path;
+}
 
-  const { error } = await client.rpc("submit_payment", {
+export async function submitReceipt(userId: string, file: File, note: string): Promise<void> {
+  const path = await uploadReceiptFile(userId, file);
+  const { error } = await getSupabaseClient().rpc("submit_payment", {
     p_receipt_path: path,
     p_note: note.trim() ? note.trim().slice(0, 500) : null,
   });
   if (error) throw new Error(friendlyPaymentError(error.message));
+}
+
+/* ---------- Event sign-up ---------- */
+
+export type EventRegistration = {
+  status: "going" | "pending" | "approved" | "rejected" | "cancelled";
+  admin_comment: string | null;
+};
+
+function friendlyEventError(message: string): string {
+  if (message.includes("event_over")) return "This event has already taken place.";
+  if (message.includes("event_cancelled")) return "This event has been cancelled.";
+  if (message.includes("event_not_found")) return "This event is not available.";
+  if (message.includes("payment_required")) return "This is a paid event. Upload your payment receipt to register.";
+  if (message.includes("event_is_free")) return "This event is free. Just tap Register.";
+  if (message.includes("already_pending")) return "Your receipt is already waiting for review.";
+  if (message.includes("already_registered")) return "You are already registered for this event.";
+  if (message.includes("contact_admin")) return "Your payment was approved, so please contact us to cancel.";
+  if (message.includes("forbidden")) return "Only members with an active membership can sign up.";
+  return "We could not complete that. Please check your connection and try again.";
+}
+
+export async function getMyRegistration(eventId: string, userId: string): Promise<EventRegistration | null> {
+  const { data, error } = await getSupabaseClient()
+    .from("event_registrations")
+    .select("status,admin_comment")
+    .eq("event_id", eventId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) throw new Error("Your sign-up status could not load.");
+  return data;
+}
+
+export async function listMyRegistrations(userId: string): Promise<Record<string, EventRegistration["status"]>> {
+  const { data, error } = await getSupabaseClient().from("event_registrations").select("event_id,status").eq("user_id", userId);
+  if (error) throw new Error("Your sign-ups could not load.");
+  return Object.fromEntries((data ?? []).map((r) => [r.event_id, r.status]));
+}
+
+export async function registerForEvent(eventId: string): Promise<void> {
+  const { error } = await getSupabaseClient().rpc("register_for_event", { p_event_id: eventId });
+  if (error) throw new Error(friendlyEventError(error.message));
+}
+
+export async function cancelEventRegistration(eventId: string): Promise<void> {
+  const { error } = await getSupabaseClient().rpc("cancel_event_registration", { p_event_id: eventId });
+  if (error) throw new Error(friendlyEventError(error.message));
+}
+
+export async function submitEventReceipt(eventId: string, userId: string, file: File, note: string): Promise<void> {
+  const path = await uploadReceiptFile(userId, file);
+  const { error } = await getSupabaseClient().rpc("submit_event_payment", {
+    p_event_id: eventId,
+    p_receipt_path: path,
+    p_note: note.trim() ? note.trim().slice(0, 500) : null,
+  });
+  if (error) throw new Error(friendlyEventError(error.message));
 }
 
 /* ---------- Sign up / sign in / recovery ---------- */

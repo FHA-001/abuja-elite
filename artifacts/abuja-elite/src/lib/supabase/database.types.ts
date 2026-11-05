@@ -106,6 +106,7 @@ export type Database = {
           location: string | null;
           cover_image_path: string | null;
           registration_url: string | null;
+          price_amount: number;
           status: "scheduled" | "cancelled";
           featured: boolean;
           published: boolean;
@@ -122,6 +123,7 @@ export type Database = {
           location?: string | null;
           cover_image_path?: string | null;
           registration_url?: string | null;
+          price_amount?: number;
           status?: "scheduled" | "cancelled";
           featured?: boolean;
           published?: boolean;
@@ -498,6 +500,25 @@ export type Database = {
         };
         Relationships: [];
       };
+      event_registrations: {
+        Row: {
+          id: string;
+          event_id: string;
+          user_id: string;
+          status: "going" | "pending" | "approved" | "rejected" | "cancelled";
+          receipt_path: string | null;
+          member_note: string | null;
+          fee_amount: number;
+          admin_comment: string | null;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
       notifications: {
         Row: {
           id: string;
@@ -521,6 +542,11 @@ export type Database = {
       submit_payment: {Args: {p_receipt_path: string; p_note?: string | null}; Returns: string};
       admin_approve_payment: {Args: {p_submission_id: string}; Returns: Json};
       admin_reject_payment: {Args: {p_submission_id: string; p_comment: string}; Returns: Json};
+      admin_run_reminders: {Args: Record<string, never>; Returns: Json};
+      register_for_event: {Args: {p_event_id: string}; Returns: Json};
+      submit_event_payment: {Args: {p_event_id: string; p_receipt_path: string; p_note?: string | null}; Returns: Json};
+      cancel_event_registration: {Args: {p_event_id: string}; Returns: Json};
+      admin_review_event_signup: {Args: {p_registration_id: string; p_approve: boolean; p_comment?: string | null}; Returns: Json};
       recent_members: {Args: {p_limit?: number}; Returns: Json};
       search_directory: {Args: {p_query?: string | null; p_industry?: string | null; p_location?: string | null; p_skill?: string | null; p_limit?: number; p_offset?: number}; Returns: Json};
       directory_filters: {Args: Record<string, never>; Returns: Json};

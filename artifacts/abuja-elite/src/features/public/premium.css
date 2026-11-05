@@ -662,3 +662,18 @@ html:has(.elite-page) { scroll-padding-top: 96px; }
   .elite-page .notfound .gold-button,
   .elite-page .notfound .outline-button { width: 100%; }
 }
+
+/* Curated (admin-added) profiles are marked, so they are not mistaken for member accounts */
+.elite-page .curated-badge {
+  display: inline-block;
+  justify-self: start;
+  margin-bottom: 0.6rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border-strong);
+  background: var(--glass);
+  color: var(--public-gold-label);
+  font: 700 0.62rem/1.2 var(--app-font-sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
